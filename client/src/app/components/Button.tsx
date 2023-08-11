@@ -1,15 +1,15 @@
-import { ReactNode, MouseEvent } from "react"
-import { classNames } from "@/utils/index"
+import { ReactNode, MouseEvent } from 'react'
+import { classNames } from '@/utils/index'
 
 type ButtonProps = {
-  type?: "button" | "submit" | "reset" | undefined
+  type?: 'button' | 'submit' | 'reset' | undefined
   onClick: (e: MouseEvent<HTMLElement>) => void
   className?: string
   children: ReactNode
 }
 
 const Button = ({
-  type = "button",
+  type = 'button',
   onClick,
   className,
   children,
@@ -19,8 +19,8 @@ const Button = ({
       type={type}
       onClick={onClick}
       className={classNames(
-        "p-5 bg-black hover:bg-gray-900 rounded",
-        "text-white text-lg",
+        'p-5 bg-black hover:bg-gray-900 rounded',
+        'text-white text-lg',
         className
       )}
     >

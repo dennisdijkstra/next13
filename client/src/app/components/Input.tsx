@@ -1,5 +1,5 @@
-import { ChangeEvent } from "react"
-import { classNames } from "@/utils/index"
+import { ChangeEvent } from 'react'
+import { classNames } from '@/utils/index'
 
 type InputProps = {
   type?: string
@@ -12,7 +12,7 @@ type InputProps = {
 }
 
 const Input = ({
-  type = "text",
+  type = 'text',
   name,
   label,
   value,
@@ -30,7 +30,7 @@ const Input = ({
         placeholder={placeholder}
         onChange={onChange}
         className={classNames(
-          "p-3 mb-4 border-2 border-solid border-black rounded",
+          'p-3 mb-4 border-2 border-solid border-black rounded',
           className
         )}
       />

@@ -1,10 +1,18 @@
-import { ReactNode } from "react"
-import "./globals.css"
+import { ReactNode } from 'react'
+import './globals.css'
 
-const RootLayout = ({ children }: { children: ReactNode }) => {
+type RootLayoutProps = {
+  children: ReactNode
+}
+
+const RootLayout = ({
+  children,
+}: RootLayoutProps) => {
   return (
     <html lang='en'>
-      <body className='flex min-w-full min-h-screen p-10'>{children}</body>
+      <body className='flex min-w-full min-h-screen p-10'>
+        {children}
+      </body>
     </html>
   )
 }

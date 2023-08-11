@@ -1,15 +1,15 @@
-"use client"
+'use client'
 
-import { useState, ChangeEvent } from "react"
-import Input from "@/components/Input"
-import Button from "@/components/Button"
+import { useState, ChangeEvent } from 'react'
+import Input from '@/components/Input'
+import Button from '@/components/Button'
 
 const Page = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget.name === "email") {
+    if (e.currentTarget.name === 'email') {
       setEmail(e.currentTarget.value)
       return
     }
@@ -18,7 +18,7 @@ const Page = () => {
   }
 
   const handleClick = () => {
-    console.log("Clicked")
+    console.log('Clicked')
   }
 
   return (
