@@ -1,3 +1,4 @@
+import { ChangeEvent } from "react"
 import { classNames } from "@/utils/index"
 
 type InputProps = {
@@ -5,7 +6,7 @@ type InputProps = {
   name: string
   label: string
   value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
   placeholder?: string
   className?: string
 }
