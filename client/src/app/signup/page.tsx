@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, ChangeEvent } from "react"
-import Input from "../components/Input"
+import Input from "@/components/Input"
 
 const Page = () => {
   const [email, setEmail] = useState("")
