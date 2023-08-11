@@ -1,9 +1,10 @@
+import { ReactNode } from "react"
 import "./globals.css"
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang='en'>
-      <body>{children}</body>
+      <body className='flex min-w-full min-h-screen p-10'>{children}</body>
     </html>
   )
 }
