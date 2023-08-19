@@ -3,9 +3,10 @@ import { classNames } from '@/utils/index'
 
 type ButtonProps = {
   type?: 'button' | 'submit' | 'reset' | undefined
-  onClick: (e: MouseEvent<HTMLElement>) => void
+  onClick?: (e: MouseEvent<HTMLElement>) => void
   className?: string
   children: ReactNode
+  isDisabled?: boolean
 }
 
 const Button = ({
@@ -13,6 +14,7 @@ const Button = ({
   onClick,
   className,
   children,
+  isDisabled,
 }: ButtonProps) => {
   return (
     <button
@@ -23,6 +25,7 @@ const Button = ({
         'text-white text-lg',
         className
       )}
+      disabled={isDisabled}
     >
       {children}
     </button>

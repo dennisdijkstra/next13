@@ -1,10 +1,13 @@
 'use client'
 
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, FormEvent } from 'react'
+import useSWRMutation from 'swr/mutation'
+import { createUser } from '@/api'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
 
 const Page = () => {
+  const { trigger: createNewUser, isMutating: isCreating } = useSWRMutation('users', createUser)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -17,15 +20,17 @@ const Page = () => {
     setPassword(e.currentTarget.value)
   }
 
-  const handleClick = () => {
-    console.log('Clicked')
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    createNewUser({ email, password})
   }
 
   return (
     <div className='w-full flex flex-col'>
       <h1 className='text-4xl font-bold'>Sign Up</h1>
       <div className='flex flex-1 items-center justify-center'>
-        <form>
+        <form onSubmit={onSubmit}>
           <div className='flex flex-col mb-6'>
             <Input
               name='email'
@@ -51,7 +56,7 @@ const Page = () => {
               className='w-80'
             />
           </div>
-          <Button type='submit' onClick={handleClick} className='w-full'>
+          <Button type='submit' className='w-full' isDisabled={isCreating}>
             Sign Up
           </Button>
         </form>
