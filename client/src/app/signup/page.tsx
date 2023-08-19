@@ -10,6 +10,7 @@ const Page = () => {
   const { trigger: createNewUser, isMutating: isCreating } = useSWRMutation('users', createUser)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.name === 'email') {
@@ -17,7 +18,12 @@ const Page = () => {
       return
     }
 
-    setPassword(e.currentTarget.value)
+    if (e.currentTarget.name === 'password') {
+      setPassword(e.currentTarget.value)
+      return
+    }
+
+    setConfirmPassword(e.currentTarget.value)
   }
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -37,7 +43,7 @@ const Page = () => {
               label='Email'
               value={email}
               onChange={onChange}
-              className='w-80'
+              className='w-96'
             />
             <Input
               type='password'
@@ -45,15 +51,15 @@ const Page = () => {
               label='Password'
               value={password}
               onChange={onChange}
-              className='w-80'
+              className='w-96'
             />
             <Input
               type='password'
               name='confirm-password'
               label='Confirm password'
-              value={password}
+              value={confirmPassword}
               onChange={onChange}
-              className='w-80'
+              className='w-96'
             />
           </div>
           <Button type='submit' className='w-full' isDisabled={isCreating}>
