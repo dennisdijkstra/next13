@@ -22,9 +22,10 @@ const Input = ({
 }: InputProps) => {
   return (
     <>
-      <label className='mb-2'>{label}</label>
+      <label htmlFor={name} className='mb-2'>{label}</label>
       <input
         type={type}
+        id={name}
         name={name}
         value={value}
         placeholder={placeholder}

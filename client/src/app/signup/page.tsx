@@ -1,47 +1,64 @@
 'use client'
 
 import { useState, ChangeEvent, FormEvent } from 'react'
+import * as yup from 'yup'
 import useSWRMutation from 'swr/mutation'
 import { createUser } from '@/api'
+import { capitalize } from '@/utils'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
 
+const schema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup.string().required(),
+  confirmPassword: yup.string().required().oneOf([yup.ref('password')], 'Your passwords do not match.'),
+})
+
 const Page = () => {
+  const [data, setData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  })
+  const [error, setError] = useState('')
+
   const { trigger: createNewUser, isMutating: isCreating } = useSWRMutation('users', createUser)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget.name === 'email') {
-      setEmail(e.currentTarget.value)
-      return
-    }
+    setError('')
 
-    if (e.currentTarget.name === 'password') {
-      setPassword(e.currentTarget.value)
-      return
-    }
-
-    setConfirmPassword(e.currentTarget.value)
+    setData({
+      ...data,
+      [e.currentTarget.name]: e.currentTarget.value
+    })
   }
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    createNewUser({ email, password})
+    try {
+      await schema.validate(data, { abortEarly: false })
+    } catch (error) {
+      setError(error.errors[0])
+      return
+    }
+
+    createNewUser({
+      email: data.email,
+      password: data.password
+    })
   }
 
   return (
     <div className='w-full flex flex-col'>
       <h1 className='text-4xl font-bold'>Sign Up</h1>
       <div className='flex flex-1 items-center justify-center'>
-        <form onSubmit={onSubmit}>
-          <div className='flex flex-col mb-6'>
+        <form onSubmit={onSubmit} className="relative">
+          <div className='flex flex-col mb-8'>
             <Input
               name='email'
               label='Email'
-              value={email}
+              value={data.email}
               onChange={onChange}
               className='w-96'
             />
@@ -49,19 +66,20 @@ const Page = () => {
               type='password'
               name='password'
               label='Password'
-              value={password}
+              value={data.password}
               onChange={onChange}
               className='w-96'
             />
             <Input
               type='password'
-              name='confirm-password'
+              name='confirmPassword'
               label='Confirm password'
-              value={confirmPassword}
+              value={data.confirmPassword}
               onChange={onChange}
               className='w-96'
             />
           </div>
+          {error && <p className="text-sm text-red-600 absolute bottom-[84px]">{capitalize(error)}</p>}
           <Button type='submit' className='w-full' isDisabled={isCreating}>
             Sign Up
           </Button>
