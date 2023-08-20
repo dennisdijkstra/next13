@@ -1,7 +1,6 @@
-import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
-import { createAccessToken } from '@/utils/index.js'
-import prisma from '@/client.js'
+import { Request, Response } from 'express'
+import { createUser, getUser } from '@/services/users.js'
 
 export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -9,35 +8,23 @@ export const register = async (req: Request, res: Response) => {
     res.status(400).json({ message: 'Email and password are required'})
   }
 
-  const existingUser = await prisma.user.findFirst({
-    where: { email }
-  })
-
+  const existingUser = await getUser(email)
   if (existingUser) {
     res.status(409).json({ message: 'User already exists'})
   }
 
-  const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(password, salt)
-
-  const accessToken = createAccessToken(email)
-  const data = { email, password: hashedPassword, accessToken }
-  const user = await prisma.user.create({ data })
-  
-  //   res.cookie('token', accessToken, { maxAge: 300 * 1000 })
+  const user = await createUser(email, password)
+  //  res.cookie('token', accessToken, { maxAge: 300 * 1000 })
   res.status(201).json({ user })
 }
 
-export const login: RequestHandler = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body
   if (! email || ! password) {
     res.status(400).json({ message: 'Email and password are required'})
   }
 
-  const user = await prisma.user.findFirst({
-    where: { email }
-  })
-
+  const user = await getUser(email)
   if (! user) {
     res.status(401).json({ message: 'Unauthorized'})
   }
@@ -47,17 +34,16 @@ export const login: RequestHandler = async (req, res) => {
     res.status(401).json({ message: 'Unauthorized'})
   }
 
-  const accessToken = createAccessToken(user.email)
-  res.cookie('token', accessToken, { maxAge: 300 * 1000 })
-
+  //  const accessToken = createAccessToken(user.email)
+  //  res.cookie('token', accessToken, { maxAge: 300 * 1000 })
   res.status(200).json({ message: 'Logged in' })
 }
 
-export const logout: RequestHandler = (req, res) => {
+export const logout = (req: Request, res: Response) => {
   res.status(200).json({ message: 'Logout' })
 }
 
-export const refreshToken: RequestHandler = (req, res) => {
+export const refreshToken = (req: Request, res: Response) => {
   res.status(200).json({ message: 'Refresh access token' })
 }
 
