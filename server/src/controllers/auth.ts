@@ -1,12 +1,20 @@
-import { RequestHandler } from 'express'
+import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import { createAccessToken } from '@/utils/index.js'
 import prisma from '@/client.js'
 
-export const register: RequestHandler = async (req, res) => {
+export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body
   if (! email || ! password) {
     res.status(400).json({ message: 'Email and password are required'})
+  }
+
+  const existingUser = await prisma.user.findFirst({
+    where: { email }
+  })
+
+  if (existingUser) {
+    res.status(409).json({ message: 'User already exists'})
   }
 
   const salt = await bcrypt.genSalt(10)
@@ -16,8 +24,8 @@ export const register: RequestHandler = async (req, res) => {
   const data = { email, password: hashedPassword, accessToken }
   const user = await prisma.user.create({ data })
   
-  res.cookie('token', accessToken, { maxAge: 300 * 1000 })
-  res.status(201).json({ user, accessToken })
+  //   res.cookie('token', accessToken, { maxAge: 300 * 1000 })
+  res.status(201).json({ user })
 }
 
 export const login: RequestHandler = async (req, res) => {
