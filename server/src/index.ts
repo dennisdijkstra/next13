@@ -1,5 +1,6 @@
 import express, { Express } from 'express'
 import dotenv from 'dotenv'
+import auth from '@/routes/auth.js'
 import users from '@/routes/users.js'
 
 dotenv.config()
@@ -11,6 +12,7 @@ app.get('/', (req, res) => {
   res.end('Hello World!')
 })
 
+app.use('/', auth)
 app.use('/users', users)
 
 app.listen(port, () => {
