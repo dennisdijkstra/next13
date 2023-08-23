@@ -8,6 +8,9 @@ type User = {
 export const createUser = async (url: string, { arg }: { arg: User }) => {
   await fetch(`${apiUrl}/${url}`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(arg)
   })
 }
