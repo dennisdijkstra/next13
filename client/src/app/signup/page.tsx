@@ -22,7 +22,7 @@ const Page = () => {
   })
   const [error, setError] = useState('')
 
-  const { trigger: createNewUser, isMutating: isCreating } = useSWRMutation('users', createUser)
+  const { trigger: createNewUser, isMutating: isCreating } = useSWRMutation('auth/register', createUser)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setError('')

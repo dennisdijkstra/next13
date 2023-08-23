@@ -6,12 +6,12 @@ import { createTokens } from '@/services/auth.js'
 export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body
   if (! email || ! password) {
-    res.status(400).json({ message: 'Email and password are required'})
+    return res.status(400).json({ message: 'Email and password are required'})
   }
 
   const existingUser = await getUser(email)
   if (existingUser) {
-    res.status(409).json({ message: 'User already exists'})
+    return res.status(409).json({ message: 'User already exists'})
   }
 
   const user = await createUser(email, password)
@@ -26,17 +26,17 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body
   if (! email || ! password) {
-    res.status(400).json({ message: 'Email and password are required'})
+    return res.status(400).json({ message: 'Email and password are required'})
   }
 
   const user = await getUser(email)
   if (! user) {
-    res.status(401).json({ message: 'Unauthorized'})
+    return res.status(401).json({ message: 'Unauthorized'})
   }
 
-  const match = bcrypt.compare(password, user.password)
+  const match = await bcrypt.compare(password, user.password)
   if (! match) {
-    res.status(401).json({ message: 'Unauthorized'})
+    return res.status(401).json({ message: 'Unauthorized'})
   }
 
   const { accessToken, refreshToken} = createTokens(user)

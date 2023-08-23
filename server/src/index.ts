@@ -4,14 +4,19 @@ import cookieParser from 'cookie-parser'
 import auth from '@/routes/auth.js'
 import users from '@/routes/users.js'
 
+// Load env variables
 dotenv.config()
 
 const app: Express = express()
 const port = process.env.PORT
 
+// Middlewares
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
-app.use('/', auth)
+// Routing
+app.use('/auth', auth)
 app.use('/users', users)
 
 app.listen(port, () => {
