@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
 import { createUser, getUser } from '@/services/users.js'
+import { createTokens } from '@/services/auth.js'
 
 export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -14,7 +15,11 @@ export const register = async (req: Request, res: Response) => {
   }
 
   const user = await createUser(email, password)
-  //  res.cookie('token', accessToken, { maxAge: 300 * 1000 })
+
+  const { accessToken, refreshToken} = createTokens(user)
+  res.cookie('acccess_token', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' })
+  res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' })
+
   res.status(201).json({ user })
 }
 
@@ -34,13 +39,19 @@ export const login = async (req: Request, res: Response) => {
     res.status(401).json({ message: 'Unauthorized'})
   }
 
-  //  const accessToken = createAccessToken(user.email)
-  //  res.cookie('token', accessToken, { maxAge: 300 * 1000 })
+  const { accessToken, refreshToken} = createTokens(user)
+
+  res.cookie('acccess_token', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' })
+  res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' })
+
   res.status(200).json({ message: 'Logged in' })
 }
 
 export const logout = (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Logout' })
+  res.clearCookie('access_token')
+  res.clearCookie('refresh_token')
+
+  res.end()
 }
 
 export const refreshToken = (req: Request, res: Response) => {
