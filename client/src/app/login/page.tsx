@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import useSWRMutation from 'swr/mutation'
 import * as yup from 'yup'
 import Link from 'next/link'
-import { login } from '@/api'
+import { login as fetcher } from '@/api'
 import { capitalize } from '@/utils'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
@@ -23,7 +23,7 @@ const Page = () => {
   const [error, setError] = useState('')
 
   const router = useRouter()
-  const { trigger, isMutating: isLoading } = useSWRMutation('auth/login', login)
+  const { trigger: login, isMutating: isLoading } = useSWRMutation('auth/login', fetcher)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setError('')
@@ -45,7 +45,7 @@ const Page = () => {
     }
 
     try {
-      await trigger({
+      await login({
         email: formData.email,
         password: formData.password
       })

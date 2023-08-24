@@ -3,14 +3,14 @@
 import { useRouter } from 'next/navigation'
 import useSWRMutation from 'swr/mutation'
 import Button from '@/components/Button'
-import { logout } from '@/api'
+import { logout as fetcher } from '@/api'
 
 const Page = () => {
   const router = useRouter()
-  const { trigger } = useSWRMutation('auth/logout', logout)
+  const { trigger: logout } = useSWRMutation('auth/logout', fetcher)
 
   const handleClick = async () => {
-    await trigger()
+    await logout()
     router.push('/login')
   }
 

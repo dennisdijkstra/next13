@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import useSWRMutation from 'swr/mutation'
 import * as yup from 'yup'
 import Link from 'next/link'
-import { register } from '@/api'
+import { register as fetcher } from '@/api'
 import { capitalize } from '@/utils'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
@@ -25,7 +25,7 @@ const Page = () => {
   const [error, setError] = useState('')
 
   const router = useRouter()
-  const { trigger: createNewUser, isMutating: isLoading } = useSWRMutation('auth/register', register)
+  const { trigger: register, isMutating: isLoading } = useSWRMutation('auth/register', fetcher)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setError('')
@@ -47,7 +47,7 @@ const Page = () => {
     }
 
     try {
-      createNewUser({
+      register({
         email: data.email,
         password: data.password
       })

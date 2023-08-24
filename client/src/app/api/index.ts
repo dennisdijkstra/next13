@@ -26,7 +26,6 @@ const request = async (method: string, url: string, arg?: object) => {
     ...config,
   })
 
-  console.log(res)
   if (! res.ok) {
     throw new Error(res.statusText)
   }
