@@ -17,8 +17,8 @@ export const register = async (req: Request, res: Response) => {
   const user = await createUser(email, password)
 
   const { accessToken, refreshToken} = createTokens(user)
-  res.cookie('acccess_token', accessToken, { httpOnly: true, sameSite: 'none' })
-  res.cookie('refresh_token', refreshToken, { httpOnly: true, sameSite: 'none' })
+  res.cookie('acccess_token', accessToken, { httpOnly: true, secure: true })
+  res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true })
 
   res.status(201).json({ user })
 }
@@ -41,8 +41,8 @@ export const login = async (req: Request, res: Response) => {
 
   const { accessToken, refreshToken} = createTokens(user)
 
-  res.cookie('acccess_token', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' })
-  res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' })
+  res.cookie('acccess_token', accessToken, { httpOnly: true, secure: true })
+  res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true })
 
   res.status(200).json({ message: 'Logged in' })
 }
