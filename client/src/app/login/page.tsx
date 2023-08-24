@@ -44,13 +44,13 @@ const Page = () => {
       return
     }
 
-    try {
-      await login({
-        email: formData.email,
-        password: formData.password
-      })
-    } catch (error) {
-      setError(error.message)
+    const { error: loginError } = await login({
+      email: formData.email,
+      password: formData.password
+    })
+
+    if (loginError) {
+      setError(loginError)
       return
     }
 
@@ -79,7 +79,7 @@ const Page = () => {
               className='w-96'
             />
           </div>
-          {error && <p className="text-sm text-red-600 absolute bottom-[84px]">{capitalize(error)}</p>}
+          {error && <p className="text-sm text-red-600 absolute bottom-[124px]">{capitalize(error)}</p>}
           <Button type='submit' className='w-full mb-4' isDisabled={isLoading}>
             Login
           </Button>

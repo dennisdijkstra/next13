@@ -46,13 +46,14 @@ const Page = () => {
       return
     }
 
-    try {
-      register({
-        email: data.email,
-        password: data.password
-      })
-    } catch (error) {
-      setError(error.message)
+    const { error: registerError } = await register({
+      email: data.email,
+      password: data.password
+    })
+
+    if (registerError) {
+      setError(registerError)
+      return
     }
 
     router.push('/')
@@ -88,7 +89,7 @@ const Page = () => {
               className='w-96'
             />
           </div>
-          {error && <p className="text-sm text-red-600 absolute bottom-[84px]">{capitalize(error)}</p>}
+          {error && <p className="text-sm text-red-600 absolute bottom-[124px]">{capitalize(error)}</p>}
           <Button type='submit' className='w-full mb-4' isDisabled={isLoading}>
             Sign Up
           </Button>

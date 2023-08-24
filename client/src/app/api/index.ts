@@ -20,27 +20,31 @@ const config: Config = {
 }
 
 const request = async (method: string, url: string, arg?: object) => {
-  const res = await fetch(`${apiUrl}/${url}`, {
-    method,
-    body: arg ? JSON.stringify(arg): null,
-    ...config,
-  })
+  try {
+    const res = await fetch(`${apiUrl}/${url}`, {
+      method,
+      body: arg ? JSON.stringify(arg): null,
+      ...config,
+    })
+    
+    if (! res.ok) {
+      return { error: res.statusText }
+    }
 
-  if (! res.ok) {
-    throw new Error(res.statusText)
+    return { res }
+  } catch (error) {
+    return { error: error.message }
   }
-
-  return res
 }
 
 export const register = async (url: string, { arg }: { arg: User }) => {
-  await request('POST', url, arg)
+  return request('POST', url, arg)
 }
 
 export const login = async (url: string, { arg }: { arg: User }) => {
-  await request('POST', url, arg)
+  return request('POST', url, arg)
 }
 
 export const logout = async (url: string) => {
-  await request('POST', url)
+  return request('POST', url)
 }
