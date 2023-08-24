@@ -5,13 +5,31 @@ type User = {
   password: string
 }
 
-export const createUser = async (url: string, { arg }: { arg: User }) => {
+type Config = {
+  headers: {
+    'Content-Type': string 
+  },
+  credentials: RequestCredentials
+}
+
+const config: Config = {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  credentials: 'include',
+}
+
+export const register = async (url: string, { arg }: { arg: User }) => {
   await fetch(`${apiUrl}/${url}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-    body: JSON.stringify(arg)
+    body: JSON.stringify(arg),
+    ...config,
+  })
+}
+
+export const logout = async (url: string) => {
+  await fetch(`${apiUrl}/${url}`, {
+    method: 'POST',
+    ...config,
   })
 }
