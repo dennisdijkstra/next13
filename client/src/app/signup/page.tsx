@@ -4,6 +4,7 @@ import { useState, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import useSWRMutation from 'swr/mutation'
 import * as yup from 'yup'
+import Link from 'next/link'
 import { register } from '@/api'
 import { capitalize } from '@/utils'
 import Input from '@/components/Input'
@@ -45,10 +46,14 @@ const Page = () => {
       return
     }
 
-    createNewUser({
-      email: data.email,
-      password: data.password
-    })
+    try {
+      createNewUser({
+        email: data.email,
+        password: data.password
+      })
+    } catch (error) {
+      setError(error.message)
+    }
 
     router.push('/')
   }
@@ -84,9 +89,10 @@ const Page = () => {
             />
           </div>
           {error && <p className="text-sm text-red-600 absolute bottom-[84px]">{capitalize(error)}</p>}
-          <Button type='submit' className='w-full' isDisabled={isLoading}>
+          <Button type='submit' className='w-full mb-4' isDisabled={isLoading}>
             Sign Up
           </Button>
+          <Link href="/login" className="float-right underline">Log In</Link>
         </form>
       </div>
     </div>

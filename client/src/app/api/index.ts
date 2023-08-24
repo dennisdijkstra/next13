@@ -19,25 +19,29 @@ const config: Config = {
   credentials: 'include',
 }
 
-export const register = async (url: string, { arg }: { arg: User }) => {
-  await fetch(`${apiUrl}/${url}`, {
-    method: 'POST',
-    body: JSON.stringify(arg),
+const request = async (method: string, url: string, arg?: object) => {
+  const res = await fetch(`${apiUrl}/${url}`, {
+    method,
+    body: arg ? JSON.stringify(arg): null,
     ...config,
   })
+
+  console.log(res)
+  if (! res.ok) {
+    throw new Error(res.statusText)
+  }
+
+  return res
+}
+
+export const register = async (url: string, { arg }: { arg: User }) => {
+  await request('POST', url, arg)
 }
 
 export const login = async (url: string, { arg }: { arg: User }) => {
-  await fetch(`${apiUrl}/${url}`, {
-    method: 'POST',
-    body: JSON.stringify(arg),
-    ...config,
-  })
+  await request('POST', url, arg)
 }
 
 export const logout = async (url: string) => {
-  await fetch(`${apiUrl}/${url}`, {
-    method: 'POST',
-    ...config,
-  })
+  await request('POST', url)
 }
