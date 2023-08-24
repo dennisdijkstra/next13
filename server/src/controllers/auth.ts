@@ -17,7 +17,7 @@ export const register = async (req: Request, res: Response) => {
   const user = await createUser(email, password)
 
   const { accessToken, refreshToken} = createTokens(user)
-  res.cookie('acccess_token', accessToken, { httpOnly: true, secure: true })
+  res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
   res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true })
 
   res.status(201).json({ user })

@@ -27,6 +27,14 @@ export const register = async (url: string, { arg }: { arg: User }) => {
   })
 }
 
+export const login = async (url: string, { arg }: { arg: User }) => {
+  await fetch(`${apiUrl}/${url}`, {
+    method: 'POST',
+    body: JSON.stringify(arg),
+    ...config,
+  })
+}
+
 export const logout = async (url: string) => {
   await fetch(`${apiUrl}/${url}`, {
     method: 'POST',
