@@ -15,9 +15,9 @@ const Page = () => {
   }
 
   return (
-    <div>
+    <div className='w-full flex flex-col'>
       <h1 className='text-4xl font-bold'>Home</h1>
-      <Button onClick={handleClick}>
+      <Button onClick={handleClick} className="mt-auto self-start">
         Log Out
       </Button>
     </div>
