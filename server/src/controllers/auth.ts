@@ -57,4 +57,3 @@ export const logout = (req: Request, res: Response) => {
 export const refreshToken = (req: Request, res: Response) => {
   res.status(200).json({ message: 'Refresh access token' })
 }
-
