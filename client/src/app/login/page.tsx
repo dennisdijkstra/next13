@@ -79,11 +79,14 @@ const Page = () => {
               className='w-96'
             />
           </div>
-          {error && <p className="text-sm text-red-600 absolute bottom-[124px]">{capitalize(error)}</p>}
+          {error && <p className="text-sm text-red-600 absolute bottom-[152px]">{capitalize(error)}</p>}
           <Button type='submit' className='w-full mb-4' isDisabled={isLoading}>
             Login
           </Button>
-          <Link href="/signup" className="float-right underline">Sign up</Link>
+          <div className="flex flex-col float-right">
+            <Link href="/signup" className="text-right underline">Sign up</Link>
+            <Link href="/forgot-password" className="text-right underline">Forgot your password?</Link>
+          </div>
         </form>
       </div>
     </div>

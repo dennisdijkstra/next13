@@ -31,7 +31,7 @@ const Input = ({
         placeholder={placeholder}
         onChange={onChange}
         className={classNames(
-          'p-3 mb-4 border-2 border-solid border-black rounded',
+          'p-3 mb-4 bg-purple-50 border-2 border-solid border-black rounded',
           className
         )}
       />
