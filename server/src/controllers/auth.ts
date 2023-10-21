@@ -54,6 +54,16 @@ export const logout = (req: Request, res: Response) => {
   res.end()
 }
 
-export const refreshToken = (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Refresh access token' })
+export const refreshToken = async (req: Request, res: Response) => {
+  const { id } = req.body
+  const user = await getUser(id)
+  if (! user) {
+    return res.status(401).json({ message: 'Unauthorized'})
+  }
+
+  const { accessToken, refreshToken} = createTokens(user)
+
+  res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
+  res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true })
+  res.status(200)
 }
