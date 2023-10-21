@@ -29,7 +29,7 @@ const request = async (method: string, url: string, arg?: object) => {
       ...(arg && { data: JSON.stringify(arg) }),
       ...config,
     })
-  
+    
     return { res }
   } catch (error) {
     return { error: error.message }
@@ -39,6 +39,20 @@ const request = async (method: string, url: string, arg?: object) => {
 export const refreshToken = async () => {
   return request('POST', 'auth/refreshToken')
 }
+
+axios.interceptors.response.use((response) => {
+  return response
+}, async function (error) {
+  const originalRequest = error.config
+
+  if (error.response.status === 403 && !originalRequest._retry) {
+    originalRequest._retry = true
+
+    await refreshToken()
+    return axios(originalRequest)
+  }
+  return Promise.reject(error)
+})
 
 export const register = async (url: string, { arg }: { arg: User }) => {
   return request('POST', url, arg)
@@ -51,4 +65,3 @@ export const login = async (url: string, { arg }: { arg: User }) => {
 export const logout = async (url: string) => {
   return request('POST', url)
 }
-
