@@ -1,4 +1,5 @@
-const { fetch: originalFetch } = window
+import axios from 'axios'
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 type User = {
@@ -10,27 +11,24 @@ type Config = {
   headers: {
     'Content-Type': string 
   },
-  credentials: RequestCredentials
+  withCredentials: boolean
 }
 
 const config: Config = {
   headers: {
     'Content-Type': 'application/json',
   },
-  credentials: 'include',
+  withCredentials: true,
 }
 
 const request = async (method: string, url: string, arg?: object) => {
   try {
-    const res = await fetch(`${apiUrl}/${url}`, {
+    const res = await axios({
       method,
-      body: arg ? JSON.stringify(arg): null,
+      url: `${apiUrl}/${url}`,
+      ...(arg && { data: JSON.stringify(arg) }),
       ...config,
     })
-      
-    if (! res.ok) {
-      return { error: res.statusText }
-    }
   
     return { res }
   } catch (error) {
@@ -38,26 +36,8 @@ const request = async (method: string, url: string, arg?: object) => {
   }
 }
 
-const refreshToken = async () => {
+export const refreshToken = async () => {
   return request('POST', 'auth/refreshToken')
-}
-
-window.fetch = async (...args) => {
-  const [resource, config ] = args
-  const response = await originalFetch(resource, config)
-
-  if (!response.ok && response.status === 401) {
-    const refreshTokenResponse = await refreshToken()
-
-    if (!refreshTokenResponse.ok) {
-      return refreshTokenResponse
-    }
-
-    const initialResponse = await originalFetch(resource, config)
-    return initialResponse
-  }
-
-  return response
 }
 
 export const register = async (url: string, { arg }: { arg: User }) => {
