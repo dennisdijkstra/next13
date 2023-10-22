@@ -16,7 +16,8 @@ export const createTokens = (user) => {
     process.env.JWT_ACCESS_TOKEN_SECRET,
     {
       algorithm: 'HS256',
-      expiresIn: '5m'
+      //   expiresIn: '5m'
+      expiresIn: '10s'
     }
   )
 

@@ -1,58 +1,45 @@
-import axios from 'axios'
+import { User, Config } from '@/api/types'
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
-
-type User = {
-  email: string
-  password: string
-}
-
-type Config = {
-  headers: {
-    'Content-Type': string 
-  },
-  withCredentials: boolean
-}
 
 const config: Config = {
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
+  credentials: 'include',
 }
 
 const request = async (method: string, url: string, arg?: object) => {
+  const resource = `${apiUrl}/${url}`
+  const options = {
+    method,
+    body: arg ? JSON.stringify(arg): null,
+    ...config,
+  }
+
   try {
-    const res = await axios({
-      method,
-      url: `${apiUrl}/${url}`,
-      ...(arg && { data: JSON.stringify(arg) }),
-      ...config,
-    })
+    let res = await fetch(resource, options)
+
+    if (! res.ok) {
+      if (res.status === 401 && res.statusText === 'Unauthorized') {
+        await request('POST', 'auth/refresh-token')
+
+        if (!res.ok) {
+          window.location.href = '/login'
+          return
+        }
+
+        res = await fetch(resource, options)
+      }
+
+      return { error: res.statusText }
+    }
     
     return { res }
   } catch (error) {
     return { error: error.message }
   }
 }
-
-export const refreshToken = async () => {
-  return request('POST', 'auth/refreshToken')
-}
-
-axios.interceptors.response.use((response) => {
-  return response
-}, async function (error) {
-  const originalRequest = error.config
-
-  if (error.response.status === 403 && !originalRequest._retry) {
-    originalRequest._retry = true
-
-    await refreshToken()
-    return axios(originalRequest)
-  }
-  return Promise.reject(error)
-})
 
 export const register = async (url: string, { arg }: { arg: User }) => {
   return request('POST', url, arg)
@@ -64,4 +51,8 @@ export const login = async (url: string, { arg }: { arg: User }) => {
 
 export const logout = async (url: string) => {
   return request('POST', url)
+}
+
+export const getUsers = async (url: string) => {
+  return request('GET', url)
 }

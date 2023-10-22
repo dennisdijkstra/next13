@@ -34,8 +34,6 @@ const Page = () => {
       setError(error.errors[0])
       return
     }
-
-    console.log('submit')
   }
 
   return (

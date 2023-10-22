@@ -2,6 +2,7 @@ import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import { authorize } from '@/middleware/auth.js'
 import auth from '@/routes/auth.js'
 import users from '@/routes/users.js'
 
@@ -22,6 +23,7 @@ app.use(cookieParser())
 
 // Routing
 app.use('/auth', auth)
+app.use(authorize)
 app.use('/users', users)
 
 app.listen(port, () => {

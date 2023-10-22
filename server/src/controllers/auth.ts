@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import { Request, Response } from 'express'
 import { createUser, getUser } from '@/services/users.js'
 import { createTokens } from '@/services/auth.js'
@@ -55,15 +56,19 @@ export const logout = (req: Request, res: Response) => {
 }
 
 export const refreshToken = async (req: Request, res: Response) => {
-  const { id } = req.body
-  const user = await getUser(id)
-  if (! user) {
-    return res.status(401).json({ message: 'Unauthorized'})
+  const token = req.cookies.refresh_token
+
+  if (!token) {
+    return res.status(401).send('Access Denied. No refresh token provided.')
   }
 
-  const { accessToken, refreshToken} = createTokens(user)
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_TOKEN_SECRET)
+    const { accessToken } = createTokens(decoded)
 
-  res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
-  res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true })
-  res.status(200)
+    res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
+    res.status(200).json({ message: 'Success' })
+  } catch (error) {
+    return res.status(400).send('Invalid refresh token.')
+  }
 }
