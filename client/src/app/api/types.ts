@@ -9,3 +9,8 @@ export type Config = {
 	},
 	credentials: RequestCredentials
 }
+
+export type RequestResponse = {
+    res?: Response,
+    error?: string,
+}

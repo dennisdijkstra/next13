@@ -1,6 +1,7 @@
-import { User, Config } from '@/api/types'
+import { User, Config, RequestResponse } from '@/api/types'
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
+let isRefreshing = false
 
 const config: Config = {
   headers: {
@@ -9,7 +10,7 @@ const config: Config = {
   credentials: 'include',
 }
 
-const request = async (method: string, url: string, arg?: object) => {
+const request = async (method: string, url: string, arg?: object): Promise<RequestResponse | undefined> => {
   const resource = `${apiUrl}/${url}`
   const options = {
     method,
@@ -21,15 +22,18 @@ const request = async (method: string, url: string, arg?: object) => {
     let res = await fetch(resource, options)
 
     if (! res.ok) {
-      if (res.status === 401 && res.statusText === 'Unauthorized') {
-        await request('POST', 'auth/refresh-token')
+      if (res.status === 401 && res.statusText === 'Unauthorized' && ! isRefreshing) {
+        isRefreshing = true
+        const refreshResponse = await request('POST', 'auth/refresh-token')
+        isRefreshing = false
 
-        if (!res.ok) {
+        if (! refreshResponse?.res?.ok) {
           window.location.href = '/login'
           return
         }
 
         res = await fetch(resource, options)
+        return { res }
       }
 
       return { error: res.statusText }
