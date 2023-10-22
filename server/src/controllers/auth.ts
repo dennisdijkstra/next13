@@ -55,15 +55,15 @@ export const logout = (req: Request, res: Response) => {
   res.end()
 }
 
-export const refreshToken = async (req: Request, res: Response) => {
-  const token = req.cookies.refresh_token
+export const refreshAccessToken = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refresh_token
 
-  if (!token) {
+  if (!refreshToken) {
     return res.status(401).send('Access Denied. No refresh token provided.')
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_REFRESH_TOKEN_SECRET)
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET)
     const { accessToken } = createTokens(decoded)
 
     res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
