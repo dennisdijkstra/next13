@@ -2,36 +2,29 @@
 
 import { useRouter } from 'next/navigation'
 import useSWRMutation from 'swr/mutation'
-import { useShallow } from 'zustand/react/shallow'
 import Button from '@/components/Button'
-import { logout as logOutFetcher, getUser as getUserFetcher } from '@/api'
+import { logout as logOutFetcher } from '@/api'
 import { useAuthStore } from '@/store/authStore'
+import { useShallow } from 'zustand/react/shallow'
 
 const Page = () => {
-  const { isAuthenticated, login } = useAuthStore(
-    useShallow((state) => ({ isAuthenticated: state.isAuthenticated, login: state.login }))
+  const { isAuthenticated, setIsAuthenticated } = useAuthStore(
+    useShallow((state) => ({ isAuthenticated: state.isAuthenticated, setIsAuthenticated: state.setIsAuthenticated }))
   )
   const router = useRouter()
   const { trigger: logout } = useSWRMutation('auth/logout', logOutFetcher)
-  const { trigger: getUser } = useSWRMutation('users/31', getUserFetcher)
 
   const handleClick = async () => {
     await logout()
+    setIsAuthenticated(false)
     router.push('/login')
   }
 
-  const users = async () => {
-    await getUser()
-  }
-
-  console.log(isAuthenticated, login)
+  console.log(isAuthenticated)
 
   return (
     <div className='w-full flex flex-col'>
       <h1 className='text-4xl font-bold'>Home</h1>
-      <Button onClick={users} className="mt-auto self-start">
-        Make user request
-      </Button>
       <Button onClick={handleClick} className="mt-auto self-start">
         Log Out
       </Button>

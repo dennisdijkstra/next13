@@ -6,6 +6,7 @@ import useSWRMutation from 'swr/mutation'
 import * as yup from 'yup'
 import Link from 'next/link'
 import { login as fetcher } from '@/api'
+import { useAuthStore } from '@/store/authStore'
 import { capitalize } from '@/utils'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
@@ -16,6 +17,7 @@ const schema = yup.object().shape({
 })
 
 const Page = () => {
+  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -54,6 +56,7 @@ const Page = () => {
       return
     }
 
+    setIsAuthenticated(true)
     router.push('/')
   }
 
