@@ -57,6 +57,6 @@ export const logout = async (url: string) => {
   return request('POST', url)
 }
 
-export const getUsers = async (url: string) => {
+export const getUser = async (url: string) => {
   return request('GET', url)
 }

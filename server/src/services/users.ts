@@ -15,9 +15,14 @@ export const createUser = async (email: string, password: string) => {
   return user
 }
 
-export const getUser = async (email: string) => {
+export const getUserByIdOrEmail = async ({ id, email } : { id?: number, email?: string }) => {
   const user = await prisma.user.findFirst({
-    where: { email },
+    where: {
+      OR: [
+        { id },
+        { email },
+      ],
+    },
     select: {
       id: true,
       email: true,

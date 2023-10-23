@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { Request, Response } from 'express'
-import { createUser, getUser } from '@/services/users.js'
+import { createUser, getUserByIdOrEmail } from '@/services/users.js'
 import { createTokens } from '@/services/auth.js'
 
 export const register = async (req: Request, res: Response) => {
@@ -10,7 +10,7 @@ export const register = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Email and password are required'})
   }
 
-  const existingUser = await getUser(email)
+  const existingUser = await getUserByIdOrEmail({ email })
   if (existingUser) {
     return res.status(409).json({ message: 'User already exists'})
   }
@@ -21,7 +21,7 @@ export const register = async (req: Request, res: Response) => {
   res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
   res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true })
 
-  res.status(201).json({ user })
+  res.status(201).json({ id: user.id })
 }
 
 export const login = async (req: Request, res: Response) => {
@@ -30,7 +30,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Email and password are required'})
   }
 
-  const user = await getUser(email)
+  const user = await getUserByIdOrEmail({ email })
   if (! user) {
     return res.status(401).json({ message: 'Unauthorized'})
   }
@@ -45,7 +45,7 @@ export const login = async (req: Request, res: Response) => {
   res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
   res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true })
 
-  res.status(200).json({ id: user.id, email: user.email })
+  res.status(200).json({ id: user.id })
 }
 
 export const logout = (req: Request, res: Response) => {

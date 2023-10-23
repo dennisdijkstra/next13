@@ -3,7 +3,7 @@ import { getUser } from '@/controllers/users.js'
 
 const router = Router()
 
-router.get('/', getUser)
+router.get('/:id', getUser)
 router.patch('/:id')
 router.delete('/:id')
 

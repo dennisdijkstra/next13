@@ -1,10 +1,9 @@
 import { RequestHandler } from 'express'
-import { getUser as lol } from '@/services/users.js'
-
+import { getUserByIdOrEmail } from '@/services/users.js'
 
 export const getUser: RequestHandler = async (req, res) => {
-  const { email } = req.body
-  const user = await lol(email)
+  const { id } = req.params
+  const user = await getUserByIdOrEmail({ id: parseInt(id) })
 
   res.status(200).json({ id: user.id, email: user.email })
 }
