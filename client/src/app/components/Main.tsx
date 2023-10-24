@@ -1,7 +1,7 @@
-const Main = () => {
+const Main = ({ children }) => {
   return (
-    <div className="flex flex-1 items-center justify-center">
-      Main
+    <div className="flex flex-1 p-5">
+      {children}
     </div>
   )
 }

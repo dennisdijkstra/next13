@@ -61,7 +61,7 @@ const Page = () => {
   }
 
   return (
-    <div className='w-full flex flex-col'>
+    <>
       <h1 className='text-4xl font-bold'>Log In</h1>
       <div className='flex flex-1 items-center justify-center'>
         <form onSubmit={onSubmit} className="relative">
@@ -92,7 +92,7 @@ const Page = () => {
           </div>
         </form>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -8,7 +8,7 @@ import { getUser as fetcher } from '@/api'
 import Header from '@/components/Header'
 import Main from '@/components/Main'
 import SideNav from '@/components/SideNav'
-import './globals.css'
+import '../globals.css'
 
 type RootLayoutProps = {
   children: ReactNode
@@ -33,7 +33,9 @@ const RootLayout = ({
         <SideNav />
         <div className="flex flex-col flex-1 bg-purple-50">
           <Header />
-          <Main />
+          <Main>
+            {children}
+          </Main>
         </div>
       </body>
     </html>
