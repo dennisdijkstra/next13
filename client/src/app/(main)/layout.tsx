@@ -2,8 +2,8 @@
 
 import { ReactNode, useEffect } from 'react'
 import useSWR from 'swr'
-import { useRouter } from 'next/navigation'
-// import { useAuthStore } from '@/store/authStore'
+import { useShallow } from 'zustand/react/shallow'
+import { useAuthStore } from '@/store/authStore'
 import { getUser as fetcher } from '@/api'
 import Header from '@/components/Header'
 import Main from '@/components/Main'
@@ -17,15 +17,18 @@ type RootLayoutProps = {
 const RootLayout = ({
   children,
 }: RootLayoutProps) => {
-  const { data } = useSWR('users/31', fetcher)
-  const router = useRouter()
-  //   const setUser = useAuthStore((state) => state.setUser)
+  const { data } = useSWR('users/me', fetcher)
+
+  const { user, setUser } = useAuthStore(
+    useShallow((state) => ({ user: state.user, setUser: state.setUser }))
+  )
 
   useEffect(() => {
-    if (data?.res?.ok) {
-      router.push('/')
+    if (data && ! user) {
+      console.log('set')
+      setUser(data.res)
     }
-  }, [data?.res?.ok, router])
+  }, [data, user, setUser])
 
   return (
     <html lang='en'>

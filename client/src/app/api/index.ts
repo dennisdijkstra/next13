@@ -10,7 +10,7 @@ const config: Config = {
   credentials: 'include',
 }
 
-const request = async (method: string, url: string, arg?: object): Promise<RequestResponse | undefined> => {
+const request = async (method: string, url: string, arg?: object) => {
   const resource = `${apiUrl}/${url}`
   const options = {
     method,
@@ -19,15 +19,11 @@ const request = async (method: string, url: string, arg?: object): Promise<Reque
   }
 
   try {
-    let res = await fetch(resource, options)
+    const response = await fetch(resource, options)
 
-    if (! res.ok) {
-      if (res.status === 403 && window.location.pathname !== '/login') {
-        window.location.href = '/login'
-        return
-      }
-
-      if (res.status === 401 && res.statusText === 'Unauthorized' && ! isRefreshing) {
+    if (! response.ok) {
+      if (response.status === 401 && response.statusText === 'Unauthorized' && ! isRefreshing) {
+        console.log('???')
         isRefreshing = true
         const refreshResponse = await request('POST', 'auth/refresh-token')
         isRefreshing = false
@@ -37,14 +33,17 @@ const request = async (method: string, url: string, arg?: object): Promise<Reque
           return
         }
 
-        res = await fetch(resource, options)
-        return { res }
+        const initialResponse = await fetch(resource, options)
+        const data = await initialResponse.json()
+
+        return { res: data }
       }
 
-      return { error: res.statusText }
+      return { error: response.statusText }
     }
     
-    return { res }
+    const data = await response.json()
+    return { res: data }
   } catch (error) {
     return { error: error.message }
   }
