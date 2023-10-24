@@ -3,6 +3,7 @@
 import { ReactNode, useEffect } from 'react'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/store/authStore'
 import { getUser as fetcher } from '@/api'
 import './globals.css'
 
@@ -15,6 +16,7 @@ const RootLayout = ({
 }: RootLayoutProps) => {
   const { data } = useSWR('users/31', fetcher)
   const router = useRouter()
+  const setUser = useAuthStore((state) => state.setUser)
 
   useEffect(() => {
     if (data?.res?.ok) {
