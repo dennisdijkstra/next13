@@ -22,6 +22,11 @@ const request = async (method: string, url: string, arg?: object): Promise<Reque
     let res = await fetch(resource, options)
 
     if (! res.ok) {
+      if (res.status === 403 && window.location.pathname !== '/login') {
+        window.location.href = '/login'
+        return
+      }
+
       if (res.status === 401 && res.statusText === 'Unauthorized' && ! isRefreshing) {
         isRefreshing = true
         const refreshResponse = await request('POST', 'auth/refresh-token')
