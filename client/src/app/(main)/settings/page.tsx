@@ -2,16 +2,19 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react'
 import { useAuthStore } from '@/store/authStore'
+import { updateUser as fetcher } from '@/api'
+import useSWRMutation from 'swr/mutation'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
 
 const Settings = () => {
   const user = useAuthStore((state) => state.user)
+  const { trigger: updateUser } = useSWRMutation(`users/${user?.id}`, fetcher)
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: user?.email,
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    email: user?.email || '',
   })
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -24,10 +27,10 @@ const Settings = () => {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    // await updateUser({
-    //   email: formData.email,
-    //   password: formData.password
-    // })
+    await updateUser({
+      firstName: formData.firstName,
+      lastName: formData.lastName
+    })
   }
 
   return (
@@ -36,14 +39,14 @@ const Settings = () => {
       <form onSubmit={onSubmit} className="relative">
         <div className='flex flex-col mb-8'>
           <Input
-            name='firstname'
+            name='firstName'
             label='First name'
             value={formData.firstName}
             onChange={onChange}
             className='w-96'
           />
           <Input
-            name='lastname'
+            name='lastName'
             label='Last name'
             value={formData.lastName}
             onChange={onChange}

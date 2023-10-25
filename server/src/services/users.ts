@@ -26,7 +26,8 @@ export const getUserByIdOrEmail = async ({ id, email } : { id?: number, email?: 
     select: {
       id: true,
       email: true,
-      password: true,
+      firstName: true,
+      lastName: true,
     }
   })
   return user

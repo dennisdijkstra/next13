@@ -1,4 +1,4 @@
-import { User, Config, RequestResponse } from '@/api/types'
+import { User, Config } from '@/api/types'
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
 let isRefreshing = false
@@ -23,7 +23,6 @@ const request = async (method: string, url: string, arg?: object) => {
 
     if (! response.ok) {
       if (response.status === 401 && response.statusText === 'Unauthorized' && ! isRefreshing) {
-        console.log('???')
         isRefreshing = true
         const refreshResponse = await request('POST', 'auth/refresh-token')
         isRefreshing = false
@@ -63,4 +62,8 @@ export const logout = async (url: string) => {
 
 export const getUser = async (url: string) => {
   return request('GET', url)
+}
+
+export const updateUser = async (url: string, { arg }: { arg: { firstName: string | undefined, lastName: string | undefined }}) => {
+  return request('PATCH', url, arg)
 }
