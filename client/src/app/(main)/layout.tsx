@@ -25,7 +25,6 @@ const RootLayout = ({
 
   useEffect(() => {
     if (data && ! user) {
-      console.log('set')
       setUser(data.res)
     }
   }, [data, user, setUser])
