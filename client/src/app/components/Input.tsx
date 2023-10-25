@@ -8,6 +8,7 @@ type InputProps = {
   value: string
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   placeholder?: string
+  isDisabled?: boolean
   className?: string
 }
 
@@ -18,6 +19,7 @@ const Input = ({
   value,
   onChange,
   placeholder,
+  isDisabled = false,
   className,
 }: InputProps) => {
   return (
@@ -31,9 +33,11 @@ const Input = ({
         placeholder={placeholder}
         onChange={onChange}
         className={classNames(
-          'p-3 mb-4 bg-purple-50 border-2 border-solid border-black rounded',
-          className
+          'p-3 mb-4 border-2 border-solid border-black rounded',
+          className,
+          isDisabled ? 'bg-purple-200 text-gray-500' : 'bg-purple-50',
         )}
+        disabled={isDisabled}
       />
     </>
   )
