@@ -15,7 +15,8 @@ model User {
   externalId String   @unique @default(dbgenerated("uuid_generate_v4()")) @map("external_id") @db.VarChar(255)
   email      String   @unique @db.VarChar(50)
   password   String   @db.VarChar(255)
-  name       String?  @unique @db.VarChar(50)
+  firstName  String?  @db.VarChar(50) @map("first_name")
+  lastName   String?  @db.VarChar(50) @map("last_name")
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 
