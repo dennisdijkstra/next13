@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
+import SideNavLink from '@/components/SideNavLink'
+
 import { classNames } from '@/utils/index'
 
 const SideNav = () => {
@@ -17,13 +20,12 @@ const SideNav = () => {
       isOpen ? 'w-40' : 'w-16',
       'transition-width duration-300',
     )}>
-      <div className="h-16 flex items-center justify-center">
-        <Link href="/">
-          <div className="h-11 w-11 bg-gradient-radial from-orange-300 to-violet-800 rounded-full" />
-        </Link>
-      </div>
-      <div className="flex flex-1 items-center justify-center">
-        <Link href="/settings" className="">X</Link>
+      <Logo />
+      <div className="flex flex-col items-center justify-end flex-1 py-2">
+        <SideNavLink title="Link 1" url="/link" />
+        <SideNavLink title="Link 2" url="/link" />
+        <SideNavLink title="Link 3" url="/link" />
+        <SideNavLink title="Settings" url="/settings" />
       </div>
       <button
         onClick={handleClick}
