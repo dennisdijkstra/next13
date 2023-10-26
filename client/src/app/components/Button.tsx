@@ -21,6 +21,7 @@ const Button = ({
       type={type}
       onClick={onClick}
       className={classNames(
+        'flex items-center justify-center',
         'p-5 min-w-[200px] rounded-md',
         'bg-gradient-to-r from-orange-300 via-green-300 to-violet-800',
         'hover:brightness-110 hover:transition-all',

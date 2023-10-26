@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import Logo from '@/components/Logo'
 import SideNavLink from '@/components/SideNavLink'
-
+import { CaretRight } from '@phosphor-icons/react'
 import { classNames } from '@/utils/index'
 
 const SideNav = () => {
@@ -29,9 +28,9 @@ const SideNav = () => {
       </div>
       <button
         onClick={handleClick}
-        className="absolute top-1/2 -translate-y-1/2 h-6 w-6 bg-black rounded-full top-0 -right-2.5"
+        className="absolute flex items-center justify-center top-1/2 -translate-y-1/2 h-7 w-7 bg-gray-900 rounded-full top-0 -right-2.5"
       >
-        {isOpen ? '<' : '>'}
+        <CaretRight size={18} weight="bold" className={isOpen ? 'rotate-180' : ''} />
       </button>
     </div>
   )

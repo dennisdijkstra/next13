@@ -6,6 +6,7 @@ import { updateUser as fetcher } from '@/api'
 import useSWRMutation from 'swr/mutation'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
+import { ArrowRight } from '@phosphor-icons/react'
 
 const Settings = () => {
   const user = useAuthStore((state) => state.user)
@@ -63,6 +64,7 @@ const Settings = () => {
         </div>
         <Button type='submit' className='w-96 mb-4'>
             Save
+          <ArrowRight size={24} weight="bold" className="ml-1" />
         </Button>
       </form>
     </div>

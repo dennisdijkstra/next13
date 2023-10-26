@@ -5,7 +5,7 @@ import Link from 'next/link'
 type SideNavLinkProps = {
   title: string
   url: string
-  isActive: boolean
+  isActive?: boolean
 }
 
 const SideNavLink = ({ title, url, isActive }: SideNavLinkProps) => {
