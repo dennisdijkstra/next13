@@ -93,19 +93,22 @@ export const requestResetPassword = async (req: Request, res: Response) => {
   const fpSalt = crypto.randomBytes(64).toString('base64')
   const expiresAt = new Date(new Date().getTime() + (60 * 60 * 1000))
 
-  await prisma.resetToken.create({
+  const { token } = await prisma.resetToken.create({
     data: {
       email,
       expiresAt,
       token: fpSalt,
       isUsed: false,
     },
+    select: {
+      token: true,
+    }
   })
 
   await sendEmail({
     to: email,
     subject: 'Password reset',
-    html: `<bold>To reset your password, please click the link below.\n\nhttps://${process.env.DOMAIN}/reset-password?token=${encodeURIComponent(token)}&email=${email}</bold>`,
+    html: `<bold>To reset your password, please click the link below.\n\nhttp://${process.env.DOMAIN}/reset-password?token=${encodeURIComponent(token)}&email=${email}</bold>`,
   })
 
   return res.json({status: 'ok'})

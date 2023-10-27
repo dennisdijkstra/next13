@@ -3,7 +3,7 @@
 import { useState, ChangeEvent, FormEvent } from 'react'
 import useSWRMutation from 'swr/mutation'
 import * as yup from 'yup'
-import { register as fetcher } from '@/api'
+import { requestResetPassword as fetcher } from '@/api'
 import { capitalize } from '@/utils'
 import Link from 'next/link'
 import Input from '@/components/Input'
@@ -18,7 +18,7 @@ const Page = () => {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
 
-  const { trigger: register, isMutating: isLoading } = useSWRMutation('auth/register', fetcher)
+  const { trigger: requestResetPassword, isMutating: isLoading } = useSWRMutation('auth/forgot-password', fetcher)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setError('')
@@ -33,6 +33,15 @@ const Page = () => {
       await schema.validate({ email }, { abortEarly: false })
     } catch (error) {
       setError(error.errors[0])
+      return
+    }
+
+    const { error: requestResetPasswordError } = await requestResetPassword({
+      email,
+    })
+
+    if (requestResetPasswordError) {
+      setError(requestResetPasswordError)
       return
     }
   }

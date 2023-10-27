@@ -60,6 +60,14 @@ export const logout = async (url: string) => {
   return request('POST', url)
 }
 
+export const requestResetPassword = async (url: string, { arg }: { arg: { email: string } }) => {
+  return request('POST', url, arg)
+}
+
+export const validateResetPasswordToken = async (url: string, { arg }: { arg: { token: string } }) => {
+  return request('GET', url, arg)
+}
+
 export const resetPassword = async (url: string, { arg }: { arg: { password: string } }) => {
   return request('POST', url, arg)
 }
