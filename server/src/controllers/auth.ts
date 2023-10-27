@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
+import * as crypto from 'crypto'
 import jwt from 'jsonwebtoken'
 import { Request, Response } from 'express'
+import prisma from '@/client.js'
 import { createUser, getUserByIdOrEmail } from '@/services/users.js'
 import { createTokens } from '@/services/auth.js'
 import { sendEmail } from '@/services/mail.js'
@@ -78,4 +80,41 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(400).send('Invalid refresh token.')
   }
+}
+
+export const requestResetPassword = async (req: Request, res: Response) => {
+  const { email } = req.body
+
+  const user = await getUserByIdOrEmail({ email })
+  if (! user) {
+    return res.json({status: 'ok'})
+  }
+
+  const fpSalt = crypto.randomBytes(64).toString('base64')
+  const expiresAt = new Date(new Date().getTime() + (60 * 60 * 1000))
+
+  await prisma.resetToken.create({
+    data: {
+      email,
+      expiresAt,
+      token: fpSalt,
+      isUsed: false,
+    },
+  })
+
+  await sendEmail({
+    to: email,
+    subject: 'Password reset',
+    html: `<bold>To reset your password, please click the link below.\n\nhttps://${process.env.DOMAIN}/reset-password?token=${encodeURIComponent(token)}&email=${email}</bold>`,
+  })
+
+  return res.json({status: 'ok'})
+}
+
+export const validateResetPassword = async (req: Request, res: Response) => {
+  return res.json({status: 'ok'})
+}
+
+export const resetPassword = async (req: Request, res: Response) => {
+  return res.json({status: 'ok'})
 }

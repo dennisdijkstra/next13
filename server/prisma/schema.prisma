@@ -22,3 +22,16 @@ model User {
 
   @@map("users")
 }
+
+model ResetToken {
+  id         Int      @id @default(autoincrement())
+  externalId String   @unique @default(dbgenerated("uuid_generate_v4()")) @map("external_id") @db.VarChar(255)
+  email      String   @db.VarChar(50)
+  token      String   @db.VarChar(255)
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz()
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+  isUsed     Boolean  @db.Boolean @map("is_used")
+
+  @@map("reset_tokens")
+}
