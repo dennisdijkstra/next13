@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import { Request, Response } from 'express'
 import { createUser, getUserByIdOrEmail } from '@/services/users.js'
 import { createTokens } from '@/services/auth.js'
+import { sendEmail } from '@/services/mail.js'
 
 export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -20,6 +21,8 @@ export const register = async (req: Request, res: Response) => {
   const { accessToken, refreshToken} = createTokens(user)
   res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
   res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true })
+
+  await sendEmail(email)
 
   res.status(201).json({ id: user.id })
 }
