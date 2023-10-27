@@ -22,7 +22,12 @@ export const register = async (req: Request, res: Response) => {
   res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
   res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true })
 
-  await sendEmail(email)
+  await sendEmail({
+    to: email,
+    subject: 'Welcome',
+    text: 'Thanks for registering!',
+    html: '<bold>Test</bold>',
+  })
 
   res.status(201).json({ id: user.id })
 }

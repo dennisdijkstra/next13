@@ -60,6 +60,10 @@ export const logout = async (url: string) => {
   return request('POST', url)
 }
 
+export const resetPassword = async (url: string, { arg }: { arg: { password: string } }) => {
+  return request('POST', url, arg)
+}
+
 export const getUser = async (url: string) => {
   return request('GET', url)
 }
