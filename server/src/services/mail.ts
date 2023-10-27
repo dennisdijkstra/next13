@@ -5,7 +5,7 @@ sendGridMail.setApiKey(process.env.SENDGRID_API_KEY)
 type Email = {
   to: string,
 	subject: string
-	text: string
+	text?: string
   html: string
 }
 

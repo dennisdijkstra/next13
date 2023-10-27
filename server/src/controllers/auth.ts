@@ -25,8 +25,7 @@ export const register = async (req: Request, res: Response) => {
   await sendEmail({
     to: email,
     subject: 'Welcome',
-    text: 'Thanks for registering!',
-    html: '<bold>Test</bold>',
+    html: '<bold>Thanks for registering!</bold>',
   })
 
   res.status(201).json({ id: user.id })
