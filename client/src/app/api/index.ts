@@ -11,7 +11,14 @@ const config: Config = {
 }
 
 const request = async (method: string, url: string, arg?: object) => {
-  const resource = `${apiUrl}/${url}`
+  let resource = `${apiUrl}/${url}`
+
+  const query = arg ? arg.query : undefined
+
+  if (query) {
+    resource += `?${Object.keys(query).map((key) => `${key}=${query[key]}`).join('&')}`
+  }
+
   const options = {
     method,
     body: arg ? JSON.stringify(arg): null,
@@ -64,8 +71,8 @@ export const requestResetPassword = async (url: string, { arg }: { arg: { email:
   return request('POST', url, arg)
 }
 
-export const validateResetPasswordToken = async (url: string, { arg }: { arg: { token: string } }) => {
-  return request('GET', url, arg)
+export const validateResetPasswordToken = async (url: string) => {
+  return request('GET', url)
 }
 
 export const resetPassword = async (url: string, { arg }: { arg: { password: string } }) => {

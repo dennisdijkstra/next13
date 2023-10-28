@@ -90,6 +90,15 @@ export const requestResetPassword = async (req: Request, res: Response) => {
     return res.json({status: 'ok'})
   }
 
+  // await prisma.resetToken.update({
+  //   where: {
+  //     email: user.email,
+  //   },
+  //   data: {
+  //     isUsed: true,
+  //   }
+  // })
+
   const fpSalt = crypto.randomBytes(64).toString('base64')
   const expiresAt = new Date(new Date().getTime() + (60 * 60 * 1000))
 
@@ -115,7 +124,29 @@ export const requestResetPassword = async (req: Request, res: Response) => {
 }
 
 export const validateResetPassword = async (req: Request, res: Response) => {
-  return res.json({status: 'ok'})
+  console.log(req.query)
+  const { email, token } = req.query
+
+  if (! email || ! token) {
+    return res.status(403).send('Access Denied. No token and or email provided.')
+  }
+
+  const record = await prisma.resetToken.findFirst({
+    where: {
+      email,
+      token,
+      expiresAt: {
+        gte: new Date()
+      }
+      isUsed: false,
+    },
+  })
+
+  if (record == null) {
+    return res.json({ status: 'failed' })
+  }
+
+  return res.json({status: 'success'})
 }
 
 export const resetPassword = async (req: Request, res: Response) => {

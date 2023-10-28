@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, ChangeEvent, FormEvent } from 'react'
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import * as yup from 'yup'
-import { resetPassword as fetcher } from '@/api'
+import { resetPassword as resetPasswordFetcher, validateResetPasswordToken as validateResetPasswordTokenFetcher } from '@/api'
 import { capitalize } from '@/utils'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
 import { ArrowRight } from '@phosphor-icons/react'
@@ -17,20 +19,26 @@ const schema = yup.object().shape({
 })
 
 const Page = () => {
-  const [data, setData] = useState({
+  const [shouldFetch, setShouldFetch] = useState(false)
+  const [formData, setFormData] = useState({
     password: '',
     confirmPassword: '',
   })
   const [error, setError] = useState('')
 
   const router = useRouter()
-  const { trigger: resetPassword, isMutating: isLoading } = useSWRMutation('auth/reset', fetcher)
+  const { data } = useSWR(shouldFetch ? 'auth/reset-password' : null, validateResetPasswordTokenFetcher)
+  const { trigger: resetPassword, isMutating: isLoading } = useSWRMutation('auth/reset-password', resetPasswordFetcher)
+
+  const searchParams = useSearchParams()
+  const token = searchParams.get('token')
+  const email = searchParams.get('email')
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setError('')
 
-    setData({
-      ...data,
+    setFormData({
+      ...formData,
       [e.currentTarget.name]: e.currentTarget.value
     })
   }
@@ -46,7 +54,7 @@ const Page = () => {
     }
 
     const { error: resetError } = await resetPassword({
-      password: data.password
+      password: formData.password
     })
 
     if (resetError) {
@@ -56,6 +64,29 @@ const Page = () => {
 
     router.push('/')
   }
+
+  useEffect(() => {
+    if (!email || ! token) {
+      return
+    }
+
+    console.log('fetch')
+    setShouldFetch(true)
+
+    // console.log('here')
+
+    // const fetchData = async () => {
+    //   const res = await requestResetPassword({
+    //     email,
+    //     token,
+    //   })
+
+    //   return res
+    // }
+
+    // const response = fetchData()
+    // console.log(response)
+  }, [email, token])
 
   return (
     <>
@@ -67,7 +98,7 @@ const Page = () => {
               type='password'
               name='password'
               label='New password'
-              value={data.password}
+              value={formData.password}
               onChange={onChange}
               className='w-96'
             />
@@ -75,7 +106,7 @@ const Page = () => {
               type='password'
               name='confirmPassword'
               label='Confirm new password'
-              value={data.confirmPassword}
+              value={formData.confirmPassword}
               onChange={onChange}
               className='w-96'
             />
