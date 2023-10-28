@@ -22,7 +22,6 @@ const Page = () => {
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setError('')
-
     setEmail(e.currentTarget.value)
   }
 
