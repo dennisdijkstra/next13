@@ -87,7 +87,7 @@ export const requestResetPassword = async (req: Request, res: Response) => {
 
   const user = await getUserByIdOrEmail({ email })
   if (! user) {
-    return res.json({status: 'ok'})
+    return res.json({ status: 'ok' })
   }
 
   // await prisma.resetToken.update({
@@ -120,11 +120,10 @@ export const requestResetPassword = async (req: Request, res: Response) => {
     html: `<bold>To reset your password, please click the link below.\n\nhttp://${process.env.DOMAIN}/reset-password?token=${encodeURIComponent(token)}&email=${email}</bold>`,
   })
 
-  return res.json({status: 'ok'})
+  return res.json({ status: 'ok' })
 }
 
 export const validateResetPassword = async (req: Request, res: Response) => {
-  console.log(req.query)
   const { email, token } = req.query
 
   if (! email || ! token) {
@@ -146,9 +145,9 @@ export const validateResetPassword = async (req: Request, res: Response) => {
     return res.json({ status: 'failed' })
   }
 
-  return res.json({status: 'success'})
+  return res.status(200).json({ status: 'success' })
 }
 
 export const resetPassword = async (req: Request, res: Response) => {
-  return res.json({status: 'ok'})
+  return res.status(200).json({ status: 'ok' })
 }

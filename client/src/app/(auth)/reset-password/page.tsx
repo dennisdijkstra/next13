@@ -19,6 +19,10 @@ const schema = yup.object().shape({
 })
 
 const Page = () => {
+  const searchParams = useSearchParams()
+  const token = searchParams.get('token')
+  const email = searchParams.get('email')
+
   const [shouldFetch, setShouldFetch] = useState(false)
   const [formData, setFormData] = useState({
     password: '',
@@ -27,12 +31,9 @@ const Page = () => {
   const [error, setError] = useState('')
 
   const router = useRouter()
-  const { data } = useSWR(shouldFetch ? 'auth/reset-password' : null, validateResetPasswordTokenFetcher)
-  const { trigger: resetPassword, isMutating: isLoading } = useSWRMutation('auth/reset-password', resetPasswordFetcher)
-
-  const searchParams = useSearchParams()
-  const token = searchParams.get('token')
-  const email = searchParams.get('email')
+  const { data, isLoading } = useSWR(shouldFetch ? ['auth/reset-password', { email, token }] : null, validateResetPasswordTokenFetcher)
+  const isValidToken = data?.res.status === 'success'
+  const { trigger: resetPassword, isMutating } = useSWRMutation('auth/reset-password', resetPasswordFetcher)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setError('')
@@ -70,54 +71,47 @@ const Page = () => {
       return
     }
 
-    console.log('fetch')
     setShouldFetch(true)
-
-    // console.log('here')
-
-    // const fetchData = async () => {
-    //   const res = await requestResetPassword({
-    //     email,
-    //     token,
-    //   })
-
-    //   return res
-    // }
-
-    // const response = fetchData()
-    // console.log(response)
   }, [email, token])
+
+  if (!data) {
+    return
+  }
 
   return (
     <>
       <h1 className='text-4xl font-bold'>Reset your password</h1>
       <div className='flex flex-1 items-center justify-center'>
-        <form onSubmit={onSubmit} className="relative">
-          <div className='flex flex-col mb-8'>
-            <Input
-              type='password'
-              name='password'
-              label='New password'
-              value={formData.password}
-              onChange={onChange}
-              className='w-96'
-            />
-            <Input
-              type='password'
-              name='confirmPassword'
-              label='Confirm new password'
-              value={formData.confirmPassword}
-              onChange={onChange}
-              className='w-96'
-            />
-          </div>
-          {error && <p className="text-sm text-red-600 absolute bottom-[124px]">{capitalize(error)}</p>}
-          <Button type='submit' className='w-full mb-4' isDisabled={isLoading}>
+        {isValidToken ? (
+          <form onSubmit={onSubmit} className="relative">
+            <div className='flex flex-col mb-8'>
+              <Input
+                type='password'
+                name='password'
+                label='New password'
+                value={formData.password}
+                onChange={onChange}
+                className='w-96'
+              />
+              <Input
+                type='password'
+                name='confirmPassword'
+                label='Confirm new password'
+                value={formData.confirmPassword}
+                onChange={onChange}
+                className='w-96'
+              />
+            </div>
+            {error && <p className="text-sm text-red-600 absolute bottom-[124px]">{capitalize(error)}</p>}
+            <Button type='submit' className='w-full mb-4' isDisabled={isLoading}>
             Reset
-            <ArrowRight size={24} weight="bold" className="ml-1" />
-          </Button>
-          <Link href="/login" className="float-right underline">Back to login</Link>
-        </form>
+              <ArrowRight size={24} weight="bold" className="ml-1" />
+            </Button>
+            <Link href="/login" className="float-right underline">Back to login</Link>
+          </form>
+        ) : (
+          <p>Token has expired. Please try password reset again.</p>
+        )}
       </div>
     </>
   )

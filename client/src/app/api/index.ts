@@ -10,10 +10,22 @@ const config: Config = {
   credentials: 'include',
 }
 
-const request = async (method: string, url: string, arg?: object) => {
-  let resource = `${apiUrl}/${url}`
+type Options = {
+  query?: object | undefined
+  data?: object | undefined
+}
 
-  const query = arg ? arg.query : undefined
+const makeOptions = (method: string, payload: object): Options => {
+  const options: Options = {}
+  const key = method === 'GET' ? 'query' : 'data'
+
+  options[key] = payload
+  return options
+}
+
+const request = async (method: string, url: string, arg?: object) => {
+  const { query, data } = makeOptions(method, arg)
+  let resource = `${apiUrl}/${url}`
 
   if (query) {
     resource += `?${Object.keys(query).map((key) => `${key}=${query[key]}`).join('&')}`
@@ -21,7 +33,7 @@ const request = async (method: string, url: string, arg?: object) => {
 
   const options = {
     method,
-    body: arg ? JSON.stringify(arg): null,
+    body: data ? JSON.stringify(data): null,
     ...config,
   }
 
@@ -71,8 +83,9 @@ export const requestResetPassword = async (url: string, { arg }: { arg: { email:
   return request('POST', url, arg)
 }
 
-export const validateResetPasswordToken = async (url: string) => {
-  return request('GET', url)
+export const validateResetPasswordToken = async (args: Array<any>) => {
+  const [url, arg] = args
+  return request('GET', url, arg)
 }
 
 export const resetPassword = async (url: string, { arg }: { arg: { password: string } }) => {
