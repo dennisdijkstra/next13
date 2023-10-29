@@ -7,6 +7,7 @@ import { createUser, getUserByIdOrEmail } from '@/services/users.js'
 import { createTokens } from '@/services/auth.js'
 import { sendEmail } from '@/services/mail.js'
 import { hashPassword } from '@/services/auth.js'
+import moment from 'moment'
 
 export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -102,7 +103,7 @@ export const requestResetPassword = async (req: Request, res: Response) => {
   })
 
   const fpSalt = crypto.randomBytes(64).toString('base64')
-  const expiresAt = new Date(new Date().getTime() + (60 * 60 * 2000))
+  const expiresAt = moment().utc().add(1, 'hours').format()
 
   const { token } = await prisma.resetToken.create({
     data: {
@@ -130,7 +131,7 @@ export const validateResetPassword = async (req: Request, res: Response) => {
   await prisma.resetToken.deleteMany({
     where: {
       expiresAt: {
-        lte: new Date()
+        lte: moment().utc().format()
       }
     }
   })
@@ -146,7 +147,7 @@ export const validateResetPassword = async (req: Request, res: Response) => {
       email,
       token,
       expiresAt: {
-        gte: new Date()
+        gte:moment().utc().format()
       },
       isUsed: false,
     },
@@ -167,7 +168,7 @@ export const resetPassword = async (req: Request, res: Response) => {
       email,
       token,
       expiresAt: {
-        gte: new Date()
+        gte: moment().utc().format()
       },
       isUsed: false,
     },
