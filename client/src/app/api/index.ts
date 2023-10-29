@@ -88,7 +88,7 @@ export const validateResetPasswordToken = async (args: Array<any>) => {
   return request('GET', url, arg)
 }
 
-export const resetPassword = async (url: string, { arg }: { arg: { password: string } }) => {
+export const resetPassword = async (url: string, { arg }: { arg: { password: string, token: string, email: string } }) => {
   return request('POST', url, arg)
 }
 

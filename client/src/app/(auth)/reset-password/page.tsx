@@ -48,14 +48,21 @@ const Page = () => {
     e.preventDefault()
 
     try {
-      await schema.validate(data, { abortEarly: false })
+      await schema.validate(formData, { abortEarly: false })
     } catch (error) {
       setError(error.errors[0])
       return
     }
 
+    if (! token || ! email) {
+      setError('No token and or email provided')
+      return
+    }
+
     const { error: resetError } = await resetPassword({
-      password: formData.password
+      password: formData.password,
+      token,
+      email,
     })
 
     if (resetError) {

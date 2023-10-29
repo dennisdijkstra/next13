@@ -102,7 +102,7 @@ export const requestResetPassword = async (req: Request, res: Response) => {
   })
 
   const fpSalt = crypto.randomBytes(64).toString('base64')
-  const expiresAt = new Date(new Date().getTime() + (60 * 60 * 1000))
+  const expiresAt = new Date(new Date().getTime() + (60 * 60 * 2000))
 
   const { token } = await prisma.resetToken.create({
     data: {
