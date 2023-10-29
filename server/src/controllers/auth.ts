@@ -6,6 +6,7 @@ import prisma from '@/client.js'
 import { createUser, getUserByIdOrEmail } from '@/services/users.js'
 import { createTokens } from '@/services/auth.js'
 import { sendEmail } from '@/services/mail.js'
+import { hashPassword } from '@/services/auth.js'
 
 export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body
@@ -76,7 +77,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     const { accessToken } = createTokens(decoded)
 
     res.cookie('access_token', accessToken, { httpOnly: true, secure: true })
-    res.status(200).json({ message: 'Success' })
+    res.status(200).json({ message: 'ok' })
   } catch (error) {
     return res.status(400).send('Invalid refresh token.')
   }
@@ -140,7 +141,7 @@ export const validateResetPassword = async (req: Request, res: Response) => {
     return res.status(403).send('Access Denied. No token and or email provided.')
   }
 
-  const record = await prisma.resetToken.findFirst({
+  const resetToken = await prisma.resetToken.findFirst({
     where: {
       email,
       token,
@@ -151,13 +152,50 @@ export const validateResetPassword = async (req: Request, res: Response) => {
     },
   })
 
-  if (record == null) {
-    return res.json({ status: 'failed' })
+  if (resetToken == null) {
+    return res.json({ status: 'error' })
   }
 
-  return res.status(200).json({ status: 'success' })
+  return res.status(200).json({ status: 'ok' })
 }
 
 export const resetPassword = async (req: Request, res: Response) => {
-  return res.status(200).json({ status: 'ok' })
+  const { email, token, password } = req.body
+
+  const resetToken = await prisma.resetToken.findFirst({
+    where: {
+      email,
+      token,
+      expiresAt: {
+        gte: new Date()
+      },
+      isUsed: false,
+    },
+  })
+
+  if (resetToken == null) {
+    return res.status(403).json({ status: 'error', message: 'Token not found. Please try the reset password process again.' })
+  }
+
+  await prisma.resetToken.update({
+    where: {
+      id: resetToken.id,
+    },
+    data: {
+      isUsed: true,
+    }
+  })
+
+  const hashedPassword = await hashPassword(password)
+
+  await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      password: hashedPassword,
+    }
+  })
+
+  return res.status(200).json({ status: 'ok', message: 'Password reset. Please login with your new password.' })
 }

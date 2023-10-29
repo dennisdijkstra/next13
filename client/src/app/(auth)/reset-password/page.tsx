@@ -32,8 +32,8 @@ const Page = () => {
 
   const router = useRouter()
   const { data, isLoading } = useSWR(shouldFetch ? ['auth/reset-password', { email, token }] : null, validateResetPasswordTokenFetcher)
-  const isValidToken = data?.res.status === 'success'
-  const { trigger: resetPassword, isMutating } = useSWRMutation('auth/reset-password', resetPasswordFetcher)
+  const isValidToken = data?.res.status === 'ok'
+  const { trigger: resetPassword } = useSWRMutation('auth/reset-password', resetPasswordFetcher)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setError('')
