@@ -90,7 +90,7 @@ const Page = () => {
       <h1 className='text-4xl font-bold'>Reset your password</h1>
       <div className='flex flex-1 items-center justify-center'>
         {isValidToken ? (
-          <form onSubmit={onSubmit} className="relative">
+          <form onSubmit={onSubmit} className="relative w-full sm:w-96">
             <div className='flex flex-col mb-8'>
               <Input
                 type='password'
@@ -98,7 +98,7 @@ const Page = () => {
                 label='New password'
                 value={formData.password}
                 onChange={onChange}
-                className='w-96'
+                className='w-full'
               />
               <Input
                 type='password'
@@ -106,7 +106,7 @@ const Page = () => {
                 label='Confirm new password'
                 value={formData.confirmPassword}
                 onChange={onChange}
-                className='w-96'
+                className='w-full'
               />
             </div>
             {error && <p className="text-sm text-red-600 absolute bottom-[124px]">{capitalize(error)}</p>}
