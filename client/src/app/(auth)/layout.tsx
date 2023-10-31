@@ -1,14 +1,12 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { Open_Sans } from 'next/font/google'
+import { openSans } from '../fonts'
 import '../globals.css'
 
 type RootLayoutProps = {
   children: ReactNode
 }
-
-const openSans = Open_Sans({ subsets: ['latin'], weight: '600' })
 
 const RootLayout = ({
   children,

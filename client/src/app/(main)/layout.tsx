@@ -8,14 +8,12 @@ import { getUser as fetcher } from '@/api'
 import Header from '@/components/Header'
 import Main from '@/components/Main'
 import SideNav from '@/components/SideNav'
-import { Open_Sans } from 'next/font/google'
+import { openSans } from '../fonts'
 import '../globals.css'
 
 type RootLayoutProps = {
   children: ReactNode
 }
-
-const openSans = Open_Sans({ subsets: ['latin'], weight: '600' })
 
 const RootLayout = ({
   children,
