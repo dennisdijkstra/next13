@@ -8,11 +8,14 @@ import { getUser as fetcher } from '@/api'
 import Header from '@/components/Header'
 import Main from '@/components/Main'
 import SideNav from '@/components/SideNav'
+import { Open_Sans } from 'next/font/google'
 import '../globals.css'
 
 type RootLayoutProps = {
   children: ReactNode
 }
+
+const openSans = Open_Sans({ subsets: ['latin'], weight: '600' })
 
 const RootLayout = ({
   children,
@@ -30,7 +33,7 @@ const RootLayout = ({
   }, [data, user, setUser])
 
   return (
-    <html lang='en'>
+    <html lang='en' className={openSans.className}>
       <body className='flex min-w-full min-h-screen bg-purple-50'>
         <SideNav />
         <div className="flex flex-col flex-1 bg-purple-50">
