@@ -3,6 +3,7 @@
 import Notification from '@/components/Notification'
 
 type Notification = {
+  id: string,
   message: string,
   type: 'success' | 'failure' | 'warning'
 }
