@@ -37,8 +37,8 @@ const Notification = ({ message, type, onClose }: NotificationProps) => {
   return (
     <div
       className={classNames(
-        'h-20 w-96 px-12',
-        'absolute right-8 bottom-8',
+        'relative mb-2 last:mb-0',
+        'h-16 w-[400px] px-12',
         'rounded-md text-sm',
         'flex justify-center items-center',
         className

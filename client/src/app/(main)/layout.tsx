@@ -7,7 +7,7 @@ import { useAuthStore } from '@/store/authStore'
 import { getUser as fetcher } from '@/api'
 import Header from '@/components/Header'
 import Main from '@/components/Main'
-import Notification from '@/components/Notification'
+import NotificationsList from '@/components/NotificationsList'
 import SideNav from '@/components/SideNav'
 import { openSans } from '../fonts'
 import '../globals.css'
@@ -40,10 +40,12 @@ const RootLayout = ({
           <Main>
             {children}
           </Main>
-          <Notification
-            type="failure"
-            message="This is a success notification"
-            onClose={() => console.log('Close')}
+          <NotificationsList
+            notifications={[
+              { type: 'success', message: 'This is a success notification!' },
+              { type: 'warning', message: 'This is a warning notification!' },
+              { type: 'failure', message: 'This is a failure notification!' },
+            ]}
           />
         </div>
       </body>
