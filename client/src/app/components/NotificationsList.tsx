@@ -1,29 +1,27 @@
 'use client'
 
 import Notification from '@/components/Notification'
+import { useNotificationsStore } from '@/store/notificationsStore'
 
 type Notification = {
-  id: string,
   message: string,
   type: 'success' | 'failure' | 'warning'
 }
 
-type NotificationsListProps = {
-  notifications: Notification[],
-}
+const NotificationsList = () => {
+  const notifications = useNotificationsStore((state) => state.notifications)
 
-const NotificationsList = ({ notifications }: NotificationsListProps) => {
   const onClose = () => {
     console.log('Close')
   }
 
   return (
     <div className="absolute right-2 bottom-2">
-      {notifications.map(({ message, type }) => (
+      {notifications.map(({ id, message, type }) => (
         <Notification
-          key={message}
-          message={message}
+          key={id}
           type={type}
+          message={message}
           onClose={onClose}
         />
       ))}

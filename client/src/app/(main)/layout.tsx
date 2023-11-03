@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from 'react'
 import useSWR from 'swr'
 import { useShallow } from 'zustand/react/shallow'
 import { useAuthStore } from '@/store/authStore'
+import { useNotificationsStore } from '@/store/notificationsStore'
 import { getUser as fetcher } from '@/api'
 import Header from '@/components/Header'
 import Main from '@/components/Main'
@@ -21,6 +22,7 @@ const RootLayout = ({
 }: RootLayoutProps) => {
   const { data } = useSWR('users/me', fetcher)
 
+  const addNotification = useNotificationsStore((state) => state.addNotification)
   const { user, setUser } = useAuthStore(
     useShallow((state) => ({ user: state.user, setUser: state.setUser }))
   )
@@ -31,6 +33,10 @@ const RootLayout = ({
     }
   }, [data, user, setUser])
 
+  const onClick = () => {
+    addNotification({ type: 'warning', message: 'This is a warning notification!' })
+  }
+
   return (
     <html lang='en' className={openSans.className}>
       <body className='flex min-w-full min-h-screen bg-purple-50'>
@@ -39,14 +45,9 @@ const RootLayout = ({
           <Header />
           <Main>
             {children}
+            <button onClick={onClick}>Click me</button>
           </Main>
-          <NotificationsList
-            notifications={[
-              { type: 'success', message: 'This is a success notification!' },
-              { type: 'warning', message: 'This is a warning notification!' },
-              { type: 'failure', message: 'This is a failure notification!' },
-            ]}
-          />
+          <NotificationsList />
         </div>
       </body>
     </html>

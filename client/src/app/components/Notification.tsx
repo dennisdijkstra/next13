@@ -7,7 +7,6 @@ import { classNames } from '@/utils/index'
 type NoticationTypes = 'success' | 'failure' | 'warning'
 
 type NotificationProps = {
-  id: string,
   message: string
   type: NoticationTypes
   onClose: () => void
