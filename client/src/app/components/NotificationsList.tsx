@@ -17,11 +17,10 @@ const NotificationsList = () => {
 
   return (
     <div className="absolute right-2 bottom-2">
-      {notifications.map(({ id, message, type }) => (
+      {notifications.map((notification) => (
         <Notification
-          key={id}
-          type={type}
-          message={message}
+          key={notification.id}
+          notification={notification}
           onClose={onClose}
         />
       ))}

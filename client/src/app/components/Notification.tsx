@@ -1,14 +1,18 @@
 'use client'
 
 import { ForwardRefExoticComponent } from 'react'
+import { useNotificationsStore } from '@/store/notificationsStore'
 import { WarningCircle, CheckCircle, XCircle, X, IconProps } from '@phosphor-icons/react'
 import { classNames } from '@/utils/index'
 
-type NoticationTypes = 'success' | 'failure' | 'warning'
+type Notification = {
+  id: string,
+  message: string,
+  type: 'success' | 'failure' | 'warning'
+}
 
 type NotificationProps = {
-  message: string
-  type: NoticationTypes
+  notification: Notification
   onClose: () => void
 }
 
@@ -18,7 +22,10 @@ type Icons = {
   warning: ForwardRefExoticComponent<IconProps>
 }
 
-const Notification = ({ message, type, onClose }: NotificationProps) => {
+const Notification = ({ notification, onClose }: NotificationProps) => {
+  const { id, type, message } = notification
+  const removeNotification = useNotificationsStore((state) => state.removeNotification)
+
   const icons: Icons = {
     success: CheckCircle,
     failure: XCircle,
@@ -34,6 +41,10 @@ const Notification = ({ message, type, onClose }: NotificationProps) => {
   const Icon = icons[type]
   const className = classes[type]
 
+  const close = () => {
+    removeNotification(id)
+  }
+
   return (
     <div
       className={classNames(
@@ -45,7 +56,7 @@ const Notification = ({ message, type, onClose }: NotificationProps) => {
       )}>
       <Icon size={24} weight="bold" className="absolute top-1/2 -translate-y-1/2 left-4" />
       <p>{message}</p>
-      <button onClick={onClose} className="absolute top-1/2 -translate-y-1/2 right-4">
+      <button onClick={close} className="absolute top-1/2 -translate-y-1/2 right-4">
         <X size={16} weight="bold" />
       </button>
     </div>
