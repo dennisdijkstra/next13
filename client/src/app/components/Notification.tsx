@@ -1,6 +1,6 @@
 'use client'
 
-import { ForwardRefExoticComponent } from 'react'
+import { useEffect, useCallback, ForwardRefExoticComponent } from 'react'
 import { useNotificationsStore } from '@/store/notificationsStore'
 import { WarningCircle, CheckCircle, XCircle, X, IconProps } from '@phosphor-icons/react'
 import { classNames } from '@/utils/index'
@@ -9,11 +9,11 @@ type Notification = {
   id: string,
   message: string,
   type: 'success' | 'failure' | 'warning'
+  hasAutoClose?: boolean,
 }
 
 type NotificationProps = {
   notification: Notification
-  onClose: () => void
 }
 
 type Icons = {
@@ -22,8 +22,8 @@ type Icons = {
   warning: ForwardRefExoticComponent<IconProps>
 }
 
-const Notification = ({ notification, onClose }: NotificationProps) => {
-  const { id, type, message } = notification
+const Notification = ({ notification }: NotificationProps) => {
+  const { id, type, message, hasAutoClose = true } = notification
   const removeNotification = useNotificationsStore((state) => state.removeNotification)
 
   const icons: Icons = {
@@ -41,9 +41,23 @@ const Notification = ({ notification, onClose }: NotificationProps) => {
   const Icon = icons[type]
   const className = classes[type]
 
-  const close = () => {
+  const close = useCallback((id: string) => {
     removeNotification(id)
-  }
+  }, [removeNotification])
+
+  useEffect(() => {
+    if (! hasAutoClose) {
+      return
+    }
+
+    const timeoutId = setTimeout(() => {
+      close(id)
+    }, 3000)
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [id, close, hasAutoClose])
 
   return (
     <div
@@ -56,7 +70,7 @@ const Notification = ({ notification, onClose }: NotificationProps) => {
       )}>
       <Icon size={24} weight="bold" className="absolute top-1/2 -translate-y-1/2 left-4" />
       <p>{message}</p>
-      <button onClick={close} className="absolute top-1/2 -translate-y-1/2 right-4">
+      <button onClick={() => close(id)} className="absolute top-1/2 -translate-y-1/2 right-4">
         <X size={16} weight="bold" />
       </button>
     </div>
