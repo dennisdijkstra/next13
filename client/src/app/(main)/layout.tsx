@@ -34,7 +34,8 @@ const RootLayout = ({
   }, [data, user, setUser])
 
   const onClick = () => {
-    addNotification({ type: 'warning', message: 'This is a warning notification!' })
+    const status = ['success', 'warning', 'failure']
+    addNotification({ type: status[Math.floor(Math.random() * status.length)], message: 'This is a warning notification!' })
   }
 
   return (
@@ -45,7 +46,7 @@ const RootLayout = ({
           <Header />
           <Main>
             {children}
-            <button onClick={onClick}>Click me</button>
+            <button onClick={onClick}>Trigger notification</button>
           </Main>
           <NotificationsList />
         </div>
