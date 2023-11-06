@@ -4,17 +4,23 @@ import { ReactNode, useState, useEffect, MouseEvent } from 'react'
 import { createPortal } from 'react-dom'
 
 type ModalProps = {
-  onClose: () => void
-  title: string,
+  title: string
+  onConfirm: () => void
+  onCancel: () => void
   children: ReactNode
 }
 
-export default function Modal({ onClose, title, children }: ModalProps) {
+export default function Modal({
+  title,
+  onConfirm,
+  onCancel,
+  children,
+}: ModalProps) {
   const [mounted, setMounted] = useState(false)
 
   const close = (e: MouseEvent<HTMLElement>) => {
     e.preventDefault()
-    onClose()
+    onConfirm()
   }
 
   useEffect(() => {
