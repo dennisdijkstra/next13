@@ -7,7 +7,7 @@ import useSWRMutation from 'swr/mutation'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
 import Modal from '@/components/Modal'
-import { ArrowRight } from '@phosphor-icons/react'
+import { ArrowRight, X } from '@phosphor-icons/react'
 
 const Settings = () => {
   const [showModal, setShowModal] = useState(false)
@@ -67,11 +67,11 @@ const Settings = () => {
             className='w-96'
             isDisabled
           />
+          <button className="text-xs underline mr-auto" onClick={onClick}>Delete account instead</button>
         </div>
-        <button onClick={onClick}>Show modal</button>
         {showModal &&
-            <Modal onClose={() => setShowModal(false)}>
-                Hello from the modal!
+            <Modal title="Delete account" onCancel={() => setShowModal(false)}>
+                Are you sure you want to delete your account?
             </Modal>
         }
         <Button type='submit' className='w-96 mb-4'>
