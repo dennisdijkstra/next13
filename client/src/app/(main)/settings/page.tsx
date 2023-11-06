@@ -67,13 +67,18 @@ const Settings = () => {
             className='w-96'
             isDisabled
           />
-          <button className="text-xs underline mr-auto" onClick={onClick}>Delete account instead</button>
+          <button
+            type="button"
+            className="text-xs underline mr-auto"
+            onClick={onClick}>
+              Delete account instead
+          </button>
         </div>
-        {showModal &&
-            <Modal title="Delete account" onCancel={() => setShowModal(false)}>
-                Are you sure you want to delete your account?
-            </Modal>
-        }
+        {showModal && (
+          <Modal title="Delete account" onCancel={() => setShowModal(false)}>
+              Are you sure you want to delete your account?
+          </Modal>
+        )}
         <Button type='submit' className='w-96 mb-4'>
             Save
           <ArrowRight size={24} weight="bold" className="ml-1" />

@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useState, useEffect, MouseEvent } from 'react'
+import { ReactNode, useState, useEffect, useRef, MouseEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from '@phosphor-icons/react'
 
@@ -17,24 +17,31 @@ export default function Modal({
   onCancel,
   children,
 }: ModalProps) {
-  const [mounted, setMounted] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const [isMounted, setIsMounted] = useState(false)
 
   const close = (e: MouseEvent<HTMLElement>) => {
     e.preventDefault()
+
+    if (modalRef.current && modalRef.current.contains(e.target as Node) && !buttonRef.current!.contains(e.target as Node)) {
+      return
+    }
+
     onCancel()
   }
 
   useEffect(() => {
-    setMounted(true)
+    setIsMounted(true)
   }, [])
 
   return (
-    mounted ? (
+    isMounted ? (
       createPortal(
-        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/50">
-          <div className="relative w-[600px] h-[400px]">
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/50" onClick={close}>
+          <div className="relative w-[600px] h-[400px]" ref={modalRef}>
             <div className="w-full h-full p-10 rounded-md bg-white">
-              <button className="absolute top-5 right-5" onClick={close}>
+              <button className="absolute top-5 right-5" onClick={close} ref={buttonRef}>
                 <X size={24} weight="bold" />
               </button>
               {title && <h1 className="text-3xl text-center font-bold">{title}</h1>}
