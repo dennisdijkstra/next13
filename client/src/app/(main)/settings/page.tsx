@@ -6,9 +6,11 @@ import { updateUser as fetcher } from '@/api'
 import useSWRMutation from 'swr/mutation'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
+import Modal from '@/components/Modal'
 import { ArrowRight } from '@phosphor-icons/react'
 
 const Settings = () => {
+  const [showModal, setShowModal] = useState(false)
   const user = useAuthStore((state) => state.user)
   const { trigger: updateUser } = useSWRMutation(`users/${user?.id}`, fetcher)
 
@@ -23,6 +25,10 @@ const Settings = () => {
       ...formData,
       [e.currentTarget.name]: e.currentTarget.value
     })
+  }
+
+  const onClick = () => {
+    setShowModal(true)
   }
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -62,6 +68,12 @@ const Settings = () => {
             isDisabled
           />
         </div>
+        <button onClick={onClick}>Show modal</button>
+        {showModal &&
+            <Modal onClose={() => setShowModal(false)}>
+                Hello from the modal!
+            </Modal>
+        }
         <Button type='submit' className='w-96 mb-4'>
             Save
           <ArrowRight size={24} weight="bold" className="ml-1" />

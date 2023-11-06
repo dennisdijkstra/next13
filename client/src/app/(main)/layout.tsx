@@ -50,6 +50,7 @@ const RootLayout = ({
           </Main>
           <NotificationsList />
         </div>
+        <div id="modal-root"></div>
       </body>
     </html>
   )
