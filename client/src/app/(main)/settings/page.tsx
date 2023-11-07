@@ -75,7 +75,11 @@ const Settings = () => {
           </button>
         </div>
         {showModal && (
-          <Modal title="Delete account" onCancel={() => setShowModal(false)}>
+          <Modal
+            title="Delete account"
+            onConfirm={() => console.log('Delete user request')}
+            onCancel={() => setShowModal(false)}
+          >
               Are you sure you want to delete your account?
           </Modal>
         )}
