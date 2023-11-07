@@ -28,3 +28,19 @@ export const updateUser: RequestHandler = async (req, res) => {
   res.status(200).json({ ...user })
 }
 
+export const deleteUser: RequestHandler = async (req, res) => {
+  const { id } = req.params
+
+  const deletedUser = await prisma.user.delete({
+    where: { id: parseInt(id)  },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+    }
+  })
+
+  res.status(200).json({ ...deletedUser })
+}
+
