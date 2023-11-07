@@ -7,7 +7,7 @@ import useSWRMutation from 'swr/mutation'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
 import Modal from '@/components/Modal'
-import { ArrowRight, X } from '@phosphor-icons/react'
+import { ArrowRight } from '@phosphor-icons/react'
 
 const Settings = () => {
   const [showModal, setShowModal] = useState(false)
