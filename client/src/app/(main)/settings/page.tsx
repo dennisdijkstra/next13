@@ -2,8 +2,13 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react'
 import { useAuthStore } from '@/store/authStore'
-import { updateUser as fetcher } from '@/api'
+import {
+  updateUser as updateUserFetcher,
+  deleteUser as deleteUserFetcher,
+  logout as logoutFetcher,
+} from '@/api'
 import useSWRMutation from 'swr/mutation'
+import { useRouter } from 'next/navigation'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
 import Modal from '@/components/Modal'
@@ -12,7 +17,13 @@ import { ArrowRight } from '@phosphor-icons/react'
 const Settings = () => {
   const [showModal, setShowModal] = useState(false)
   const user = useAuthStore((state) => state.user)
-  const { trigger: updateUser } = useSWRMutation(`users/${user?.id}`, fetcher)
+  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated)
+
+  const { trigger: updateUser } = useSWRMutation(`users/${user?.id}`, updateUserFetcher)
+  const { trigger: deleteUser } = useSWRMutation(`users/${user?.id}`, deleteUserFetcher)
+  const { trigger: logout } = useSWRMutation('auth/logout', logoutFetcher)
+
+  const router = useRouter()
 
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
@@ -29,6 +40,21 @@ const Settings = () => {
 
   const onClick = () => {
     setShowModal(true)
+  }
+
+  const onConfirm = async () => {
+    const { error: deleteUserError } = await deleteUser()
+    if (deleteUserError) {
+      return
+    }
+
+    const { error: logoutError } = await logout()
+    if (logoutError) {
+      return
+    }
+
+    setIsAuthenticated(false)
+    router.push('/login')
   }
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -77,7 +103,7 @@ const Settings = () => {
         {showModal && (
           <Modal
             title="Delete account"
-            onConfirm={() => console.log('Delete user request')}
+            onConfirm={onConfirm}
             onCancel={() => setShowModal(false)}
           >
               Are you sure you want to delete your account?

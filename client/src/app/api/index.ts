@@ -15,7 +15,7 @@ type Options = {
   data?: object | undefined
 }
 
-const makeOptions = (method: string, payload: object): Options => {
+const makeOptions = (method: string, payload: object | undefined): Options => {
   const options: Options = {}
   const key = method === 'GET' ? 'query' : 'data'
 
@@ -23,7 +23,7 @@ const makeOptions = (method: string, payload: object): Options => {
   return options
 }
 
-const request = async (method: string, url: string, arg?: object) => {
+const request = async (method: string, url: string, arg?: object): Promise<{ res?: object, error?: object}> => {
   const { query, data } = makeOptions(method, arg)
   let resource = `${apiUrl}/${url}`
 
@@ -98,4 +98,8 @@ export const getUser = async (url: string) => {
 
 export const updateUser = async (url: string, { arg }: { arg: { firstName: string | undefined, lastName: string | undefined }}) => {
   return request('PATCH', url, arg)
+}
+
+export const deleteUser = async (url: string) => {
+  return request('DELETE', url)
 }
