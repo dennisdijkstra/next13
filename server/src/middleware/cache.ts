@@ -6,7 +6,7 @@ export const cache = async (req: Request, res: Response, next: NextFunction) => 
 
   try {
     const response = await redis.get(cacheKey)
-    
+
     if (response) {
       res.send(JSON.parse(response))
     } else {
