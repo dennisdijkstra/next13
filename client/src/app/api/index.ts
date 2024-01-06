@@ -59,7 +59,7 @@ const request = async (method: string, url: string, arg?: object): Promise<{ res
 
       return { error: response.statusText }
     }
-    
+
     const data = await response.json()
     return { res: data }
   } catch (error) {

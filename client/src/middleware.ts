@@ -1,13 +1,12 @@
-import * as jose from 'jose'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const protectedRoutes = ['/', '/settings']
- 
+
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('access_token')
   const isProtectedRoute = protectedRoutes.includes(request.nextUrl.pathname)
-  
+
   if (!accessToken && isProtectedRoute) {
     return NextResponse.redirect(new URL('/login', request.url))
   }

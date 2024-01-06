@@ -12,6 +12,9 @@
       }
     ],
     "indent": ["error", 2],
-    "semi": ["error", "never"]
+    "semi": ["error", "never"],
+    "arrow-parens": [1, "always"],
+    "no-multiple-empty-lines": ["error", { "max": 1 }],
+    "no-trailing-spaces": "error"
   }
 }

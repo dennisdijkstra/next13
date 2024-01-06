@@ -5,10 +5,10 @@ export type User = {
   firstName?: string
   lastName?: string
 }
-  
+
 export type Config = {
 	headers: {
-    'Content-Type': string 
+    'Content-Type': string
 	},
 	credentials: RequestCredentials
 }
