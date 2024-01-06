@@ -1,12 +1,15 @@
 import { RequestHandler } from 'express'
-import prisma from '@/client.js'
+import prisma from '@/prismaClient.js'
+import redis from '@/redisClient.js'
 import { getUserByIdOrEmail } from '@/services/users.js'
 
 export const getUser: RequestHandler = async (req, res) => {
   const { id } = req.body.user || req.params
   const user = await getUserByIdOrEmail({ id: parseInt(id) })
 
-  delete user.password
+  delete user.password  
+  redis.set(req.originalUrl, JSON.stringify(user))
+
   res.status(200).json({ ...user })
 }
 

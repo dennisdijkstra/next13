@@ -1,17 +1,18 @@
-import redis from 'redis'
+import redis from '@/redisClient.js'
+import { Request, Response, NextFunction } from 'express'
 
-const client = redis.createClient()
-
-export const cache = (req, res, next) => {
+export const cache = async (req: Request, res: Response, next: NextFunction) => {
   const cacheKey = req.originalUrl
 
-  client.get(cacheKey, (err, data) => {
-    if (err) throw err
-
-    if (data !== null) {
-      res.json(JSON.parse(data))
+  try {
+    const response = await redis.get(cacheKey)
+    
+    if (response) {
+      res.send(JSON.parse(response))
     } else {
       next()
-    } 
-  })
+    }
+  } catch (error) {
+    throw error
+  }
 }

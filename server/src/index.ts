@@ -23,8 +23,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 // Routing
-app.use(cache)
 app.use('/auth', auth)
+app.use(cache)
 app.use(authorize)
 app.use('/users', users)
 
